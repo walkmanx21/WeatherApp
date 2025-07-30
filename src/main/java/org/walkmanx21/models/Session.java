@@ -1,11 +1,22 @@
 package org.walkmanx21.models;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "Sessions")
 public class Session {
 
+    @Id
+    @Column(name="id")
     private UUID id;
-    private int userId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @Column(name="expiresAt")
     private LocalDateTime localDateTime;
 }
