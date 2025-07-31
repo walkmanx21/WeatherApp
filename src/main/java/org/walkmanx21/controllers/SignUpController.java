@@ -1,14 +1,15 @@
 package org.walkmanx21.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.models.User;
 
 @Controller("/sign-up")
-@RequestMapping("sign-up")
+@RequestMapping("/sign-up")
 public class SignUpController {
 
     private UserDao userDao;
@@ -20,11 +21,14 @@ public class SignUpController {
 
     @GetMapping
     public String newUserRequestDto(@ModelAttribute("userRequestDto") UserRequestDto userRequestDto) {
-        return "/sign-up";
+        return "sign-up/sign-up";
     }
 
     @PostMapping
-    public String signUp(@ModelAttribute("userRequestDto") UserRequestDto userRequestDto) {
+    public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return "sign-up/sign-up-with-errors";
+
         userDao.insertUser(userRequestDto);
         return "redirect:/index";
     }
