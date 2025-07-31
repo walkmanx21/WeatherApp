@@ -1,5 +1,6 @@
 package org.walkmanx21.config;
 
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
+
+import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("org.walkmanx21")
@@ -46,5 +49,16 @@ public class SpringConfig implements WebMvcConfigurer {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
         registry.viewResolver(resolver);
+    }
+
+    @Bean(initMethod = "migrate")
+    public Flyway flyway(DataSource dataSource) {
+        return Flyway.configure()
+                .dataSource(dataSource)  // Источник данных (БД)
+//                .baselineOnMigrate(true)  // Создаёт baseline при первом запуске
+//                .baselineVersion("0")     // Начальная версия миграций
+//                .validateOnMigrate(false) // Отключает валидацию (для гибкости)
+//                .outOfOrder(true)         // Разрешает применять миграции не по порядку
+                .load();
     }
 }

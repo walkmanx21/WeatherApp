@@ -1,6 +1,7 @@
 package org.walkmanx21.config;
 
 import org.flywaydb.core.Flyway;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
@@ -8,14 +9,21 @@ import javax.sql.DataSource;
 @Configuration
 public class FlywayConfig {
 
+    @Bean
+    public DataSource dataSource() {
+        PGSimpleDataSource ds = new PGSimpleDataSource();
+        ds.setUrl("jdbc:postgresql://localhost:5432/weather_app_database");
+        ds.setUser("postgres");
+        ds.setPassword("postgres");
+        return ds;
+    }
+
     @Bean(initMethod = "migrate")
     public Flyway flyway(DataSource dataSource) {
         return Flyway.configure()
-                .dataSource(dataSource)  // Источник данных (БД)
-//                .baselineOnMigrate(true)  // Создаёт baseline при первом запуске
-//                .baselineVersion("0")     // Начальная версия миграций
-//                .validateOnMigrate(false) // Отключает валидацию (для гибкости)
-//                .outOfOrder(true)         // Разрешает применять миграции не по порядку
+                .dataSource(dataSource)
+                .locations("classpath:db/migration")
+                .baselineOnMigrate(true)
                 .load();
     }
 }
