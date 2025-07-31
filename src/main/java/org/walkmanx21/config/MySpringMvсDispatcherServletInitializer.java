@@ -8,7 +8,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class MySpringMvсDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
-    protected Class<?>[] getRootConfigClasses() {return new Class[]{AppConfig.class, FlywayConfig.class};}
+    protected Class<?>[] getRootConfigClasses() {return new Class[]{PropertyConfig.class, DataSourceConfig.class, FlywayConfig.class};}
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
