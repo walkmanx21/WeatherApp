@@ -18,8 +18,8 @@
     <h2 class="text-center mb-5">Sign Up</h2>
 
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <div class="alert alert-danger" role="alert">
+        <div class="col-12 col-lg-4 col-md-6 col-sm-12" th:object="${userRequestDto}" >
+            <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('repeatPassword')}" th:errors="*{repeatPassword}">
                 Passwords don't match.
             </div>
         </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="repeat-password" class="form-label">Repeat password</label>
-                    <input type="password" class="form-control" id="repeat-password" name="repeat-password" required value=""/>
+                    <input type="password" th:field="*{repeatPassword}" class="form-control" id="repeat-password" name="repeat-password" required value=""/>
                 </div>
 
                 <input type="hidden" name="redirect_to" value="http://localhost/"/>
