@@ -31,8 +31,8 @@
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <div class="input-group has-validation">
-                        <input type="text" th:field="*{username}" class="form-control is-invalid" id="username" name="username" required value=""/>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                        <input type="text" th:field="*{login}" class="form-control is-invalid" id="username" name="username" required value=""/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">
                             Username is not being validated.
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                 <input type="hidden" name="redirect_to" value="http://localhost/"/>
 
                 <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
-                <p class="mt-2 text-center">Already have an account? <a href="#">Sign in here</a></p>
+                <p class="mt-2 text-center">Already have an account? <a href="/sign-in">Sign in here</a></p>
             </form>
         </div>
     </div>

@@ -41,7 +41,7 @@ public class SignUpController {
         try {
             userService.insertUser(userRequestDto);
         } catch (UserAlreadyExistException e) {
-            bindingResult.rejectValue("username", "", e.getMessage());
+            bindingResult.rejectValue("login", "", e.getMessage());
             return "sign-up/sign-up-with-errors";
         }
 

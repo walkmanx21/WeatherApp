@@ -16,7 +16,7 @@ public class UserRequestDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         UserRequestDto userRequestDto = (UserRequestDto) target;
 
-        if (!userRequestDto.getPassword().equals(userRequestDto.getRepeatPassword()))
+        if (!userRequestDto.getPassword().equals(userRequestDto.getRepeatPassword()) && userRequestDto.getRepeatPassword() != null)
             errors.rejectValue("repeatPassword", "", "Passwords don't match");
     }
 }
