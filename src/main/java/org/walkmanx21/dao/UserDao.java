@@ -1,6 +1,7 @@
 package org.walkmanx21.dao;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
+import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.models.User;
 
 import java.util.Optional;
@@ -38,8 +40,14 @@ public class UserDao {
         String hql = "FROM User WHERE login = '" + incomingUser.getLogin() + "'";
 
         Session session = sessionFactory.getCurrentSession();
+        Optional<User> mayBeUser = Optional.empty();
+        try {
+            mayBeUser = Optional.of(session.createSelectionQuery(hql, User.class).getSingleResult());
+        } catch (NoResultException e) {
+            throw new UserDoesNotExistException("User with this username was not found.");
+        }
 
-        return Optional.of(session.createSelectionQuery(hql, User.class).getSingleResult());
+        return mayBeUser;
 
     }
 }

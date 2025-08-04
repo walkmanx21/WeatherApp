@@ -8,6 +8,8 @@ import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
+import org.walkmanx21.exceptions.UserDoesNotExistException;
+import org.walkmanx21.exceptions.WrongPasswordException;
 import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.util.MappingUtil;
@@ -45,6 +47,7 @@ public class UserService {
     public Optional<UserResponseDto> userAuthorization(UserRequestDto userRequestDto) {
         User user = mappingUtil.convertToUser(userRequestDto);
         Optional<User> mayBeUser = userDao.getUser(user);
+        Optional<UserResponseDto> mayBeUSerResponseDto = Optional.empty();
 
         if (mayBeUser.isPresent()) {
             User foundUser = mayBeUser.get();
@@ -55,15 +58,12 @@ public class UserService {
 
                 UserResponseDto userResponseDto = mappingUtil.convertToUserResponseDto(user);
                 userResponseDto.setSessionId(sessionId);
-
-                return Optional.of(userResponseDto);
+                mayBeUSerResponseDto = Optional.of(userResponseDto);
+            } else {
+                throw new WrongPasswordException("The entered password is incorrect");
             }
         }
 
-        System.out.println();
-
-        return Optional.empty();
-
-
+        return mayBeUSerResponseDto;
     }
 }

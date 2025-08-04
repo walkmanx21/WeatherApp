@@ -21,7 +21,7 @@ public class SessionService {
     }
 
     public UUID createSession(User user) {
-        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(30));
+        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(24*60*60));
         sessionDao.insertSession(session);
 
         return session.getId();
