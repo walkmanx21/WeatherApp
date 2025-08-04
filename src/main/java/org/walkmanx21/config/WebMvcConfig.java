@@ -24,7 +24,6 @@ import java.util.Objects;
 
 @Configuration
 @ComponentScan("org.walkmanx21")
-@PropertySource("classpath:application.properties")
 @EnableTransactionManagement
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
