@@ -23,6 +23,6 @@ public class Session {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Column(name="expiresAt")
+    @Column(name="expires_at")
     private LocalDateTime localDateTime;
 }

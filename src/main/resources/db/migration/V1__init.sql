@@ -15,5 +15,5 @@ CREATE TABLE IF NOT EXISTS Locations (
 CREATE TABLE IF NOT EXISTS Sessions (
                                         id uuid NOT NULL PRIMARY KEY,
                                         user_id INTEGER REFERENCES users(id) NOT NULL ,
-                                        expiresAt TIMESTAMP NOT NULL
+                                        expires_at TIMESTAMP NOT NULL
 );
