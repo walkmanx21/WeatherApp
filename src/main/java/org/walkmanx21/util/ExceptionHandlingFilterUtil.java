@@ -18,5 +18,4 @@ public class ExceptionHandlingFilterUtil {
         );
         return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }

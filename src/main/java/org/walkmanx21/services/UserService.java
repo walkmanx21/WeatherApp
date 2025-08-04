@@ -1,21 +1,16 @@
 package org.walkmanx21.services;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
-import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
-import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
-import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.util.MappingUtil;
 import org.walkmanx21.util.PasswordEncryptionUtil;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,14 +32,14 @@ public class UserService {
         this.sessionService = sessionService;
     }
 
-    public void insertUser(UserRequestDto userRequestDto) {
+    public void registerUser(UserRequestDto userRequestDto) {
         User user = mappingUtil.convertToUser(userRequestDto);
         String hashPassword = passwordEncryptionUtil.hashPassword(user.getPassword());
         user.setPassword(hashPassword);
         userDao.insertUser(user);
     }
 
-    public Optional<UserResponseDto> userAuthorization(UserRequestDto userRequestDto) {
+    public Optional<UserResponseDto> authorizeUser(UserRequestDto userRequestDto) {
         User user = mappingUtil.convertToUser(userRequestDto);
         Optional<User> mayBeUser = userDao.getUser(user);
         Optional<UserResponseDto> mayBeUSerResponseDto = Optional.empty();
