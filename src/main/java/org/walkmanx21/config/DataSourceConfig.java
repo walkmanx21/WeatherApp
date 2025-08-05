@@ -17,7 +17,6 @@ import java.util.Properties;
 @Configuration
 @ComponentScan("org.walkmanx21")
 @EnableTransactionManagement
-
 public class DataSourceConfig {
 
     private final Environment env;
