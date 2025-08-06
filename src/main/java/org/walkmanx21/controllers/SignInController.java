@@ -17,6 +17,8 @@ import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
 import org.walkmanx21.services.SessionService;
 import org.walkmanx21.services.UserService;
+import org.walkmanx21.util.CreateCookieUtil;
+import org.walkmanx21.util.SetSessionAttributesUtil;
 import org.walkmanx21.util.UserRequestDtoValidator;
 
 import java.util.Optional;
@@ -27,10 +29,15 @@ public class SignInController {
 
     private final UserRequestDtoValidator userRequestDtoValidator;
     private final UserService userService;
+    private final SetSessionAttributesUtil setSessionAttributesUtil;
+    private final CreateCookieUtil createCookieUtil;
+
     @Autowired
-    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SessionService sessionService) {
+    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SessionService sessionService, SetSessionAttributesUtil setSessionAttributesUtil, CreateCookieUtil createCookieUtil) {
         this.userRequestDtoValidator = userRequestDtoValidator;
         this.userService = userService;
+        this.setSessionAttributesUtil = setSessionAttributesUtil;
+        this.createCookieUtil = createCookieUtil;
     }
 
     @GetMapping
@@ -50,10 +57,8 @@ public class SignInController {
             Optional<UserResponseDto> mayBeUserResponseDto = userService.authorizeUser(userRequestDto);
             if (mayBeUserResponseDto.isPresent()) {
                 UserResponseDto userResponseDto = mayBeUserResponseDto.get();
-                httpSession.setAttribute("userId", userResponseDto.getId());
-                Cookie cookie = new Cookie("sessionId", userResponseDto.getSessionId().toString());
-                cookie.setMaxAge(24*60*60);
-                response.addCookie(cookie);
+                setSessionAttributesUtil.setSessionAttributes(httpSession, userResponseDto);
+                response.addCookie(createCookieUtil.createCookie(userResponseDto));
             }
         } catch (UserDoesNotExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());

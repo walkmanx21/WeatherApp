@@ -22,7 +22,6 @@ public class UserService {
     private final UserDao userDao;
     private final MappingUtil mappingUtil;
     private final PasswordEncryptionUtil passwordEncryptionUtil;
-    private final SessionDao sessionDao;
     private final SessionService sessionService;
 
     @Autowired
@@ -30,15 +29,18 @@ public class UserService {
         this.userDao = userDao;
         this.mappingUtil = mappingUtil;
         this.passwordEncryptionUtil = passwordEncryptionUtil;
-        this.sessionDao = sessionDao;
         this.sessionService = sessionService;
     }
 
-    public void registerUser(UserRequestDto userRequestDto) {
+    public UserResponseDto registerUser(UserRequestDto userRequestDto) {
         User user = mappingUtil.convertToUser(userRequestDto);
         String hashPassword = passwordEncryptionUtil.hashPassword(user.getPassword());
         user.setPassword(hashPassword);
-        userDao.insertUser(user);
+        user = userDao.insertUser(user);
+        UUID sessionId = sessionService.createSession(user);
+        UserResponseDto userResponseDto = mappingUtil.convertToUserResponseDto(user);
+        userResponseDto.setSessionId(sessionId);
+        return userResponseDto;
     }
 
     public Optional<UserResponseDto> authorizeUser(UserRequestDto userRequestDto) {

@@ -26,13 +26,14 @@ public class UserDao {
     }
 
     @Transactional
-    public void insertUser(User user) {
+    public User insertUser(User user) {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.persist(user);
         } catch (ConstraintViolationException e) {
             throw new UserAlreadyExistException("User with this username already exists");
         }
+        return user;
     }
 
     @Transactional
