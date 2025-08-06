@@ -37,18 +37,19 @@ public class UserDao {
     }
 
     @Transactional
-    public Optional<User> getUser(User incomingUser) {
+    public User getUser(User incomingUser) {
         String hql = "FROM User WHERE login = '" + incomingUser.getLogin() + "'";
 
         Session session = sessionFactory.getCurrentSession();
-        Optional<User> mayBeUser = Optional.empty();
+        User user;
+
         try {
-            mayBeUser = Optional.of(session.createSelectionQuery(hql, User.class).getSingleResult());
+            user = session.createSelectionQuery(hql, User.class).getSingleResult();
         } catch (NoResultException e) {
             throw new UserDoesNotExistException("User with this username was not found.");
         }
 
-        return mayBeUser;
+        return user;
 
     }
 }

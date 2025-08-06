@@ -1,6 +1,5 @@
 package org.walkmanx21.controllers;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -46,7 +45,7 @@ public class SignInController {
     }
 
     @PostMapping
-    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpSession httpSession, HttpServletResponse response){
+    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpSession httpSession, HttpServletResponse response) {
 
         userRequestDtoValidator.validate(userRequestDto, bindingResult);
 
@@ -54,12 +53,9 @@ public class SignInController {
             return "sign-in/sign-in-with-errors";
 
         try {
-            Optional<UserResponseDto> mayBeUserResponseDto = userService.authorizeUser(userRequestDto);
-            if (mayBeUserResponseDto.isPresent()) {
-                UserResponseDto userResponseDto = mayBeUserResponseDto.get();
-                setSessionAttributesUtil.setSessionAttributes(httpSession, userResponseDto);
-                response.addCookie(createCookieUtil.createCookie(userResponseDto));
-            }
+            UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
+            setSessionAttributesUtil.setSessionAttributes(httpSession, userResponseDto);
+            response.addCookie(createCookieUtil.createCookie(userResponseDto));
         } catch (UserDoesNotExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());
             return "sign-in/sign-in-with-errors";

@@ -1,6 +1,5 @@
 package org.walkmanx21.services;
 
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.SessionDao;
@@ -8,6 +7,7 @@ import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -20,10 +20,17 @@ public class SessionService {
         this.sessionDao = sessionDao;
     }
 
-    public UUID createSession(User user) {
+    public Session createSession(User user) {
         Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(24*60*60));
         sessionDao.insertSession(session);
+        return session;
+    }
 
-        return session.getId();
+    public Optional<Session> getCurrentSession(int userId) {
+        return sessionDao.getCurrentSession(userId);
+    }
+
+    public Session getSessionBySessionId(UUID sessionId) {
+        return null;
     }
 }

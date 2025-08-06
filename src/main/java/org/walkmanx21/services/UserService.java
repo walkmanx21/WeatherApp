@@ -8,6 +8,7 @@ import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.WrongPasswordException;
+import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.util.MappingUtil;
 import org.walkmanx21.util.PasswordEncryptionUtil;
@@ -37,32 +38,26 @@ public class UserService {
         String hashPassword = passwordEncryptionUtil.hashPassword(user.getPassword());
         user.setPassword(hashPassword);
         user = userDao.insertUser(user);
-        UUID sessionId = sessionService.createSession(user);
+        Session session = sessionService.createSession(user);
         UserResponseDto userResponseDto = mappingUtil.convertToUserResponseDto(user);
-        userResponseDto.setSessionId(sessionId);
+        userResponseDto.setSessionId(session.getId());
         return userResponseDto;
     }
 
-    public Optional<UserResponseDto> authorizeUser(UserRequestDto userRequestDto) {
-        User user = mappingUtil.convertToUser(userRequestDto);
-        Optional<User> mayBeUser = userDao.getUser(user);
-        Optional<UserResponseDto> mayBeUSerResponseDto = Optional.empty();
+    public UserResponseDto authorizeUser(UserRequestDto userRequestDto) {
+        User incomingUser = mappingUtil.convertToUser(userRequestDto);
+        User foundUser = userDao.getUser(incomingUser);
+        UserResponseDto userResponseDto;
 
-        if (mayBeUser.isPresent()) {
-            User foundUser = mayBeUser.get();
-
-            if (passwordEncryptionUtil.verifyPassword(user.getPassword(), foundUser.getPassword())) {
-                user.setId(foundUser.getId());
-                UUID sessionId = sessionService.createSession(user);
-
-                UserResponseDto userResponseDto = mappingUtil.convertToUserResponseDto(user);
-                userResponseDto.setSessionId(sessionId);
-                mayBeUSerResponseDto = Optional.of(userResponseDto);
-            } else {
-                throw new WrongPasswordException("The entered password is incorrect");
-            }
+        if (passwordEncryptionUtil.verifyPassword(incomingUser.getPassword(), foundUser.getPassword())) {
+            incomingUser.setId(foundUser.getId());
+            Session session = sessionService.createSession(incomingUser);
+            userResponseDto = mappingUtil.convertToUserResponseDto(incomingUser);
+            userResponseDto.setSessionId(session.getId());
+        } else {
+            throw new WrongPasswordException("The entered password is incorrect");
         }
 
-        return mayBeUSerResponseDto;
+        return userResponseDto;
     }
 }
