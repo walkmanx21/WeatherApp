@@ -2,7 +2,6 @@ package org.walkmanx21.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,14 +28,12 @@ public class SignInController {
 
     private final UserRequestDtoValidator userRequestDtoValidator;
     private final UserService userService;
-    private final SetSessionAttributesUtil setSessionAttributesUtil;
     private final CreateCookieUtil createCookieUtil;
 
     @Autowired
     public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SessionService sessionService, SetSessionAttributesUtil setSessionAttributesUtil, CreateCookieUtil createCookieUtil) {
         this.userRequestDtoValidator = userRequestDtoValidator;
         this.userService = userService;
-        this.setSessionAttributesUtil = setSessionAttributesUtil;
         this.createCookieUtil = createCookieUtil;
     }
 
@@ -55,8 +52,6 @@ public class SignInController {
 
         try {
             UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
-            setSessionAttributesUtil.setSessionAttributes(request, userResponseDto);
-            request.getSession();
             response.addCookie(createCookieUtil.createCookie(userResponseDto));
         } catch (UserDoesNotExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());

@@ -14,7 +14,7 @@ import java.util.UUID;
 public class SessionService {
 
     private final SessionDao sessionDao;
-    private static final long SESSION_LIFETIME = 60L;
+    private static final long SESSION_LIFETIME = 24 * 60 * 60;
 
     @Autowired
     public SessionService(SessionDao sessionDao) {
@@ -29,9 +29,5 @@ public class SessionService {
 
     public Optional<Session> getCurrentSession(UUID sessionId) {
         return sessionDao.getCurrentSession(sessionId);
-    }
-
-    public Session getSessionBySessionId(UUID sessionId) {
-        return null;
     }
 }

@@ -7,7 +7,7 @@ import org.walkmanx21.dto.UserResponseDto;
 @Component
 public class CreateCookieUtil {
 
-    private static final int COOKIE_LIFETIME = 60;
+    private static final int COOKIE_LIFETIME = 24 * 60 * 60;
 
     public Cookie createCookie (UserResponseDto userResponseDto) {
         Cookie cookie = new Cookie("sessionId", userResponseDto.getSessionId().toString());
