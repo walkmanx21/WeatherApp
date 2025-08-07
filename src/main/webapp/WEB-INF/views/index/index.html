@@ -14,8 +14,8 @@
             <img src="../../../img/weather-app.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
             Weather Tracker
         </a>
-        <div class="d-flex align-items-center" th:object="${userRequestDto}">
-            <span class="navbar-text me-3" th:field="*{login}" >Username</span>
+        <div class="d-flex align-items-center" th:object="${user}">
+            <span class="navbar-text me-3" th:text="${user.login}">Username</span>
             <button class="btn btn-outline-danger">Sign out</button>
         </div>
     </div>

@@ -14,6 +14,7 @@ import java.util.UUID;
 public class SessionService {
 
     private final SessionDao sessionDao;
+    private static final long SESSION_LIFETIME = 60L;
 
     @Autowired
     public SessionService(SessionDao sessionDao) {
@@ -21,13 +22,13 @@ public class SessionService {
     }
 
     public Session createSession(User user) {
-        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(24*60*60));
+        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(SESSION_LIFETIME));
         sessionDao.insertSession(session);
         return session;
     }
 
-    public Optional<Session> getCurrentSession(int userId) {
-        return sessionDao.getCurrentSession(userId);
+    public Optional<Session> getCurrentSession(UUID sessionId) {
+        return sessionDao.getCurrentSession(sessionId);
     }
 
     public Session getSessionBySessionId(UUID sessionId) {

@@ -46,7 +46,7 @@ public class UserService {
 
     public UserResponseDto authorizeUser(UserRequestDto userRequestDto) {
         User incomingUser = mappingUtil.convertToUser(userRequestDto);
-        User foundUser = userDao.getUser(incomingUser);
+        User foundUser = userDao.getUser(incomingUser.getLogin());
         UserResponseDto userResponseDto;
 
         if (passwordEncryptionUtil.verifyPassword(incomingUser.getPassword(), foundUser.getPassword())) {
@@ -60,4 +60,8 @@ public class UserService {
 
         return userResponseDto;
     }
-}
+
+    public User getUser(int userId) {
+        return userDao.getUser(userId);
+    }
+ }

@@ -1,5 +1,6 @@
 package org.walkmanx21.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -39,7 +40,7 @@ public class SignUpController {
     }
 
     @PostMapping
-    public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpSession httpSession, HttpServletResponse response) {
+    public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
 
         userRequestDtoValidator.validate(userRequestDto, bindingResult);
 
@@ -48,7 +49,7 @@ public class SignUpController {
 
         try {
             UserResponseDto userResponseDto = userService.registerUser(userRequestDto);
-            setSessionAttributesUtil.setSessionAttributes(httpSession, userResponseDto);
+            setSessionAttributesUtil.setSessionAttributes(request, userResponseDto);
             response.addCookie(createCookieUtil.createCookie(userResponseDto));
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());
