@@ -16,11 +16,9 @@ import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
 import org.walkmanx21.services.SessionService;
 import org.walkmanx21.services.UserService;
-import org.walkmanx21.util.CreateCookieUtil;
+import org.walkmanx21.util.SetCookieUtil;
 import org.walkmanx21.util.SetSessionAttributesUtil;
 import org.walkmanx21.util.UserRequestDtoValidator;
-
-import java.util.Optional;
 
 @Controller("/sign-in")
 @RequestMapping("/sign-in")
@@ -28,10 +26,10 @@ public class SignInController {
 
     private final UserRequestDtoValidator userRequestDtoValidator;
     private final UserService userService;
-    private final CreateCookieUtil createCookieUtil;
+    private final SetCookieUtil createCookieUtil;
 
     @Autowired
-    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SessionService sessionService, SetSessionAttributesUtil setSessionAttributesUtil, CreateCookieUtil createCookieUtil) {
+    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SessionService sessionService, SetSessionAttributesUtil setSessionAttributesUtil, SetCookieUtil createCookieUtil) {
         this.userRequestDtoValidator = userRequestDtoValidator;
         this.userService = userService;
         this.createCookieUtil = createCookieUtil;
@@ -52,7 +50,7 @@ public class SignInController {
 
         try {
             UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
-            response.addCookie(createCookieUtil.createCookie(userResponseDto));
+            response.addCookie(createCookieUtil.setSessionId(userResponseDto));
         } catch (UserDoesNotExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());
             return "sign-in/sign-in-with-errors";

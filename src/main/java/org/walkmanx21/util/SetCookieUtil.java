@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 import org.walkmanx21.dto.UserResponseDto;
 
 @Component
-public class CreateCookieUtil {
+public class SetCookieUtil {
 
     @Value("${lifetime.duration}")
     private int cookieLifetime;
 
-    public Cookie createCookie (UserResponseDto userResponseDto) {
+    public Cookie setSessionId(UserResponseDto userResponseDto) {
         Cookie cookie = new Cookie("sessionId", userResponseDto.getSessionId().toString());
         cookie.setMaxAge(cookieLifetime);
         return cookie;
