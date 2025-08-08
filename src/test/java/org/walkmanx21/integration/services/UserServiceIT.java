@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,6 @@ import java.util.UUID;
 @WebAppConfiguration
 @ContextConfiguration(classes = {DataSourceConfig.class, FlywayConfig.class, PropertyConfig.class})
 @ActiveProfiles("test")
-@TestPropertySource("classpath:application-test.properties")
 @Transactional
 public class UserServiceIT {
 
@@ -64,13 +62,13 @@ public class UserServiceIT {
         Assertions.assertThrows(WrongPasswordException.class, () -> userService.authorizeUser(userRequestDto));
     }
 
-//    @Test
-//    void whenWaitIsLongerThanLifetimeOfSessionItExpires() throws InterruptedException {
-//        UUID sessionId = userResponseDto.getSessionId();
-//        Thread.sleep(2000);
-//        Optional<Session> currentSession = sessionService.getCurrentSession(sessionId);
-//        Assertions.assertFalse(currentSession.isPresent());
-//    }
+    @Test
+    void whenWaitIsLongerThanLifetimeOfSessionItExpires() throws InterruptedException {
+        UUID sessionId = userResponseDto.getSessionId();
+        Thread.sleep(2000);
+        Optional<Session> currentSession = sessionService.getCurrentSession(sessionId);
+        Assertions.assertFalse(currentSession.isPresent());
+    }
 
 
 

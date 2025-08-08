@@ -1,6 +1,7 @@
 package org.walkmanx21.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.models.Session;
@@ -14,7 +15,9 @@ import java.util.UUID;
 public class SessionService {
 
     private final SessionDao sessionDao;
-    private static final long SESSION_LIFETIME = 24 * 60 * 60;
+
+    @Value("${lifetime.duration}")
+    private long sessionLifetime;
 
     @Autowired
     public SessionService(SessionDao sessionDao) {
@@ -22,7 +25,7 @@ public class SessionService {
     }
 
     public Session createSession(User user) {
-        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(SESSION_LIFETIME));
+        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().plusSeconds(sessionLifetime));
         sessionDao.insertSession(session);
         return session;
     }
