@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
@@ -48,5 +49,13 @@ public class MainPageController {
             }
         }
         return "index/index-without-user";
+    }
+
+    @PostMapping
+    public String searchWeather(Model model) {
+        model.addAttribute("locationName", null);
+        System.out.println(model.getAttribute("locationName"));
+
+        return null;
     }
 }
