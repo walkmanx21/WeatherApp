@@ -6,7 +6,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application-${spring.profiles.active}.properties")
 public class PropertyConfig {
 
     @Bean
