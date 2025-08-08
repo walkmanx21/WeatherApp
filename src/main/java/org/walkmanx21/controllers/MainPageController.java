@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.walkmanx21.dto.UserRequestDto;
+import org.walkmanx21.models.Location;
 import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
+import org.walkmanx21.services.LocationService;
 import org.walkmanx21.services.SessionService;
 import org.walkmanx21.services.UserService;
 
@@ -26,11 +28,13 @@ public class MainPageController {
 
     private final SessionService sessionService;
     private final UserService userService;
+    private final LocationService locationService;
 
     @Autowired
-    public MainPageController(SessionService sessionService, UserService userService) {
+    public MainPageController(SessionService sessionService, UserService userService, LocationService locationService) {
         this.sessionService = sessionService;
         this.userService = userService;
+        this.locationService = locationService;
     }
 
     @GetMapping
@@ -52,10 +56,8 @@ public class MainPageController {
     }
 
     @PostMapping
-    public String searchWeather(Model model) {
-        model.addAttribute("locationName", null);
-        System.out.println(model.getAttribute("locationName"));
-
-        return null;
+    public String searchWeather(@ModelAttribute("location") Location location) {
+        locationService.getWeatherForecast(location);
+        return "search-results";
     }
 }

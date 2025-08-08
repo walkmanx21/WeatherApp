@@ -23,16 +23,18 @@
 
 <section id="page-content">
     <div class="container mt-4">
-        <div class="d-flex my-4">
-            <div class="input-group location-search-input-group me-3">
-                <input class="form-control" type="text" name="name" placeholder="Enter location" required>
-                <button class="btn btn-outline-secondary btn-sm clear-input-button" type="button"
-                        onclick="this.previousElementSibling.value=''">
-                    &times;
-                </button>
+        <form th:method="POST" th:action="@{/}" th:object="${location}" action="#" class="my-4">
+            <div class="d-flex">
+                <div class="input-group location-search-input-group me-3">
+                    <input class="form-control" type="text" name="name" placeholder="Enter location" required>
+                    <button class="btn btn-outline-secondary btn-sm clear-input-button" type="button"
+                            onclick="this.previousElementSibling.value=''">
+                        &times;
+                    </button>
+                </div>
+                <button class="btn btn-outline-success" type="submit">Search</button>
             </div>
-            <button class="btn btn-outline-success">Search</button>
-        </div>
+        </form>
 
         <div>
             <div class="row">
