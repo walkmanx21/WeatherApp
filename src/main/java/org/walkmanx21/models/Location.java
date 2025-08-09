@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.internal.bytebuddy.asm.Advice;
 
 import java.math.BigDecimal;
 
@@ -31,4 +32,10 @@ public class Location {
 
     @Column(name = "longitude")
     private BigDecimal longitude;
+
+    @Transient
+    private String country;
+
+    @Transient
+    private String state;
 }

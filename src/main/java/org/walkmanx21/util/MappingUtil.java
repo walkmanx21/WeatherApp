@@ -2,9 +2,7 @@ package org.walkmanx21.util;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.walkmanx21.dto.FoundLocationDto;
-import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.UserResponseDto;
+import org.walkmanx21.dto.*;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.models.User;
 

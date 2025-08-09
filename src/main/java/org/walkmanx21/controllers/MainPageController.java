@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.walkmanx21.models.Location;
 import org.walkmanx21.models.User;
+import org.walkmanx21.services.LocationService;
 import org.walkmanx21.util.GetUserByCookieUtil;
 import org.walkmanx21.util.SetCookieUtil;
 
@@ -18,11 +20,13 @@ public class MainPageController {
 
     private final GetUserByCookieUtil getUserByCookieUtil;
     private final SetCookieUtil setCookieUtil;
+    private final LocationService locationService;
 
     @Autowired
-    public MainPageController(GetUserByCookieUtil getUserByCookieUtil, SetCookieUtil setCookieUtil) {
+    public MainPageController(GetUserByCookieUtil getUserByCookieUtil, SetCookieUtil setCookieUtil, LocationService locationService) {
         this.getUserByCookieUtil = getUserByCookieUtil;
         this.setCookieUtil = setCookieUtil;
+        this.locationService = locationService;
     }
 
     @GetMapping

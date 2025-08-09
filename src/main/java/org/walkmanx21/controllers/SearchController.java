@@ -47,9 +47,9 @@ public class SearchController {
         Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
         if (mayBeUser.isPresent()) {
             locationService.addLocation(foundLocationDto, mayBeUser.get());
-            return "redirect/:index";
+            return "redirect:/";
         } else {
-            return "redirect/:sign-in";
+            return "redirect:/sign-in";
         }
 
     }
