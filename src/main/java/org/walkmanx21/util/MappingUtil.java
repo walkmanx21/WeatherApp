@@ -2,8 +2,10 @@ package org.walkmanx21.util;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.walkmanx21.dto.FoundLocationDto;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
+import org.walkmanx21.models.Location;
 import org.walkmanx21.models.User;
 
 @Component
@@ -13,8 +15,6 @@ public class MappingUtil {
 
     static {
         MODEL_MAPPER = new ModelMapper();
-//        MODEL_MAPPER.typeMap(UserRequestDto.class, User.class)
-//                .addMapping(UserRequestDto::getLogin, User::setLogin);
     }
 
     public User convertToUser(UserRequestDto userRequestDto) {
@@ -23,6 +23,10 @@ public class MappingUtil {
 
     public UserResponseDto convertToUserResponseDto(User user) {
         return MODEL_MAPPER.map(user, UserResponseDto.class);
+    }
+
+    public Location convertToLocation (FoundLocationDto foundLocationDto) {
+        return MODEL_MAPPER.map(foundLocationDto, Location.class);
     }
 
 }
