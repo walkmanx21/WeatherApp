@@ -13,6 +13,9 @@ import org.walkmanx21.models.User;
 import org.walkmanx21.util.HttpClientUtil;
 import org.walkmanx21.util.MappingUtil;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class LocationService {
 
@@ -28,7 +31,7 @@ public class LocationService {
     }
 
 
-    public FoundLocationDto[] findLocations (FoundLocationDto foundLocationDto) {
+    public FoundLocationDto[] findLocations(FoundLocationDto foundLocationDto) {
         return openWeatherService.findLocations(foundLocationDto);
     }
 
@@ -38,12 +41,14 @@ public class LocationService {
         locationDao.insertLocation(location);
     }
 
+    public List<WeatherResponseDto> getWeatherDataForAllLocations(User user) {
+        List<Location> locations = locationDao.getAllUserLocations(user);
+        return locations.stream().map(this::getWeatherData).collect(Collectors.toList());
+    }
+
     public WeatherResponseDto getWeatherData(Location location) {
         return openWeatherService.getWeatherData(location);
     }
-
-
-
 
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.walkmanx21.exceptions.StorageUnavailableException;
+import org.walkmanx21.models.Location;
 import org.walkmanx21.models.Session;
 
 import java.time.LocalDateTime;
@@ -36,15 +37,16 @@ public class SessionDao {
 
     @Transactional
     public Optional<Session> getCurrentSession(UUID sessionId) {
+
         var hibernateSession = sessionFactory.getCurrentSession();
         String hql = "SELECT s FROM Session s WHERE s.id = :sessionId";
-        Query query = hibernateSession.createQuery(hql);
-        query.setParameter("sessionId", sessionId);
-        List<Session> findSessions = query.getResultList();
-        Optional<Session> mayBeCurrentSession = findSessions.stream()
+
+        var selectionQuery = hibernateSession.createSelectionQuery(hql, Session.class);
+        selectionQuery.setParameter("sessionId", sessionId);
+        List<Session> findSessions = selectionQuery.getResultList();
+
+        return findSessions.stream()
                 .filter(session -> session.getLocalDateTime().isAfter(LocalDateTime.now()))
                 .findFirst();
-
-        return mayBeCurrentSession;
     }
 }

@@ -62,9 +62,9 @@ public class UserDao {
         User user;
 
         try {
-            Query query = hibernateSession.createQuery(hql);
-            query.setParameter("userId", userId);
-            user = (User) query.getSingleResult();
+            var selectionQuery = hibernateSession.createSelectionQuery(hql, User.class);
+            selectionQuery.setParameter("userId", userId);
+            user = selectionQuery.getSingleResult();
         } catch (NoResultException e) {
             throw new UserDoesNotExistException("User with this username was not found.");
         }
