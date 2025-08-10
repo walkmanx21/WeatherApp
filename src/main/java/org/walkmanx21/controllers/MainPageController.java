@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.walkmanx21.dto.WeatherResponseDto;
 import org.walkmanx21.models.User;
@@ -47,6 +49,17 @@ public class MainPageController {
     public String signOut (HttpServletRequest request) {
         setCookieUtil.deleteSessionId(request);
         return "index";
+    }
+
+    @PatchMapping
+    public String deleteLocation(@ModelAttribute ("weatherResponseDto") WeatherResponseDto weatherResponseDto, HttpServletRequest request) {
+        Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
+        if (mayBeUser.isPresent()) {
+            User user = mayBeUser.get();
+            locationService.deleteLocation(weatherResponseDto, user);
+        }
+
+        return "redirect:/";
     }
 
 }

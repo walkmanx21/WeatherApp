@@ -13,6 +13,8 @@ import org.walkmanx21.models.User;
 import org.walkmanx21.util.HttpClientUtil;
 import org.walkmanx21.util.MappingUtil;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,4 +53,11 @@ public class LocationService {
     }
 
 
+    public void deleteLocation(WeatherResponseDto weatherResponseDto, User user) {
+        locationDao.deleteLocation(weatherResponseDto, user);
+    }
+
+    private BigDecimal roundingUpCoordinate(BigDecimal coordinate) {
+        return coordinate.setScale(4, RoundingMode.HALF_UP);
+    }
 }

@@ -20,6 +20,8 @@ public class OpenWeatherService {
 
     private final HttpClientUtil httpClient;
 
+    private final static double TEMPERATURE_CONVERSION_COEFFICIENT = 273.15;
+
     @Autowired
     public OpenWeatherService(HttpClientUtil httpClient) {
         this.httpClient = httpClient;
@@ -32,7 +34,7 @@ public class OpenWeatherService {
     }
 
     public WeatherResponseDto getWeatherData(Location location) {
-        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude() + "&lon=" + location.getLongitude() + "&appid=" + apiKey + "&units=metric";
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude() + "&lon=" + location.getLongitude() + "&appid=" + apiKey;
         ResponseEntity<OpenWeatherResponseDto> response = httpClient.getData(url, OpenWeatherResponseDto.class);
         OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
         if (openWeatherResponseDto != null) {
@@ -49,11 +51,15 @@ public class OpenWeatherService {
         weatherResponseDto.setName(openWeatherResponseDto.getName());
         //Присваиваем страну
         weatherResponseDto.setCountry(openWeatherResponseDto.getSys().get("country"));
+        //Присваиваем latitude
+        weatherResponseDto.setLatitude(openWeatherResponseDto.getCoord().get("lat"));
+        //Присваиваем longitude
+        weatherResponseDto.setLongitude(openWeatherResponseDto.getCoord().get("lon"));
         //Присваиваем температуру
-        long temperature = Math.round(openWeatherResponseDto.getMain().get("temp"));
+        long temperature = Math.round(openWeatherResponseDto.getMain().get("temp") - TEMPERATURE_CONVERSION_COEFFICIENT);
         weatherResponseDto.setTemperature(temperature + "°C");
         //Присваиваем "ощущается как"
-        long feelsLike = Math.round(openWeatherResponseDto.getMain().get("feels_like"));
+        long feelsLike = Math.round(openWeatherResponseDto.getMain().get("feels_like") - TEMPERATURE_CONVERSION_COEFFICIENT);
         weatherResponseDto.setFeelsLike(feelsLike + "°C");
         //Присваиваем description
         weatherResponseDto.setDescription(capitalizeFirstLetter(openWeatherResponseDto.getWeather()[0].get("description")));

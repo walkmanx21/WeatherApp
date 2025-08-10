@@ -16,6 +16,7 @@ public class OpenWeatherResponseDto {
 
     private String name;
     private Map<String, String> sys;
+    private Map<String, BigDecimal> coord;
     private Map<String, Double> main;
     private Map<String, String>[] weather;
 
