@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.view.RedirectView;
 import org.walkmanx21.dto.ErrorResponseDto;
+import org.walkmanx21.exceptions.LocationAlreadyExistException;
 import org.walkmanx21.exceptions.StorageUnavailableException;
 
 @ControllerAdvice
@@ -23,5 +24,14 @@ public class ExceptionHandlingFilterUtil {
     @ExceptionHandler(StorageUnavailableException.class)
     public RedirectView handleStorageUnavailableException(StorageUnavailableException e) {
         return new RedirectView("/error.html");
+    }
+
+    @ExceptionHandler(LocationAlreadyExistException.class)
+    public ResponseEntity<ErrorResponseDto> handleLocationAlreadyException(LocationAlreadyExistException e) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+                HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
     }
 }
