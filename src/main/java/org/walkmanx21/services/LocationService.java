@@ -8,9 +8,6 @@ import org.walkmanx21.dto.WeatherResponseDto;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.models.User;
 import org.walkmanx21.util.MappingUtil;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
