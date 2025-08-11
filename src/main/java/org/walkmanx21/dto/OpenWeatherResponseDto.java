@@ -14,6 +14,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenWeatherResponseDto {
 
+    private int id;
     private String name;
     private Map<String, String> sys;
     private Map<String, BigDecimal> coord;

@@ -50,11 +50,10 @@ public class LocationDao {
     @Transactional
     public void deleteLocation(WeatherResponseDto weatherResponseDto, User user) {
         var hibernateSession = sessionFactory.getCurrentSession();
-        String hql = "DELETE Location l WHERE l.user.id = :userId AND l.latitude = :lat AND l.longitude = :lon";
+        String hql = "DELETE Location l WHERE l.user.id = :userId AND l.id = :locationId";
         var mutationQuery = hibernateSession.createMutationQuery(hql);
         mutationQuery.setParameter("userId", user.getId());
-        mutationQuery.setParameter("lat", weatherResponseDto.getLatitude());
-        mutationQuery.setParameter("lon", weatherResponseDto.getLongitude());
+        mutationQuery.setParameter("locationId", weatherResponseDto.getId());
         mutationQuery.executeUpdate();
     }
 }

@@ -46,9 +46,8 @@
                 <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="weatherResponseDto : ${weatherResponseDtoList}">
                     <div class="card h-100 position-relative weather-card">
                         <div class="position-absolute weather-card-delete-form">
-                            <form th:method="PATCH" th:action="@{/}" th:object="${weatherResponseDto}">
-                                <input type="hidden" name="latitude" th:value="${weatherResponseDto.getLatitude()}" />
-                                <input type="hidden" name="longitude" th:value="${weatherResponseDto.getLongitude()}" />
+                            <form th:method="DELETE" th:action="@{/}" th:object="${weatherResponseDto}">
+                                <input type="hidden" name="id" th:value="${weatherResponseDto.getId()}" />
                                 <button class="btn-close" aria-label="Delete"></button>
                             </form>
                         </div>

@@ -38,6 +38,7 @@ public class OpenWeatherService {
         ResponseEntity<OpenWeatherResponseDto> response = httpClient.getData(url, OpenWeatherResponseDto.class);
         OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
         if (openWeatherResponseDto != null) {
+            openWeatherResponseDto.setId(location.getId());
             return buildWeatherResponseDto(openWeatherResponseDto);
         }
         return null;
@@ -47,6 +48,8 @@ public class OpenWeatherService {
 
         WeatherResponseDto weatherResponseDto = new WeatherResponseDto();
 
+        //Присваиваем id
+        weatherResponseDto.setId(openWeatherResponseDto.getId());
         //Присваиваем имя
         weatherResponseDto.setName(openWeatherResponseDto.getName());
         //Присваиваем страну

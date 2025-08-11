@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.WeatherResponseDto;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
@@ -51,7 +48,7 @@ public class MainPageController {
         return "index";
     }
 
-    @PatchMapping
+    @DeleteMapping
     public String deleteLocation(@ModelAttribute ("weatherResponseDto") WeatherResponseDto weatherResponseDto, HttpServletRequest request) {
         Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
         if (mayBeUser.isPresent()) {
