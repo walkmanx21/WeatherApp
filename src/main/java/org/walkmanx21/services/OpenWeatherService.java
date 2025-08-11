@@ -66,6 +66,8 @@ public class OpenWeatherService {
         weatherResponseDto.setDescription(capitalizeFirstLetter(openWeatherResponseDto.getWeather()[0].get("description")));
         //Присваиваем влажность
         weatherResponseDto.setHumidity(openWeatherResponseDto.getMain().get("humidity").toString() + "%");
+        //Присваиваем иконку погоды
+        weatherResponseDto.setWeatherIcon(openWeatherResponseDto.getWeather()[0].get("icon"));
 
         return weatherResponseDto;
     }

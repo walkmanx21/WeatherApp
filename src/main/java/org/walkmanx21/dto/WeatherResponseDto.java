@@ -18,5 +18,6 @@ public class WeatherResponseDto {
     private String feelsLike;
     private String description;
     private String humidity;
+    private String weatherIcon;
 
 }
