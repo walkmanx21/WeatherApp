@@ -20,8 +20,6 @@ public class OpenWeatherService {
 
     private final HttpClientUtil httpClient;
 
-    private final static double TEMPERATURE_CONVERSION_COEFFICIENT = 273.15;
-
     @Autowired
     public OpenWeatherService(HttpClientUtil httpClient) {
         this.httpClient = httpClient;
@@ -34,7 +32,7 @@ public class OpenWeatherService {
     }
 
     public WeatherResponseDto getWeatherData(Location location) {
-        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude() + "&lon=" + location.getLongitude() + "&appid=" + apiKey;
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude() + "&lon=" + location.getLongitude() + "&appid=" + apiKey + "&units=metric";
         ResponseEntity<OpenWeatherResponseDto> response = httpClient.getData(url, OpenWeatherResponseDto.class);
         OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
         if (openWeatherResponseDto != null) {
@@ -59,10 +57,10 @@ public class OpenWeatherService {
         //Присваиваем longitude
         weatherResponseDto.setLongitude(openWeatherResponseDto.getCoord().get("lon"));
         //Присваиваем температуру
-        long temperature = Math.round(openWeatherResponseDto.getMain().get("temp") - TEMPERATURE_CONVERSION_COEFFICIENT);
+        long temperature = Math.round(openWeatherResponseDto.getMain().get("temp"));
         weatherResponseDto.setTemperature(temperature + "°C");
         //Присваиваем "ощущается как"
-        long feelsLike = Math.round(openWeatherResponseDto.getMain().get("feels_like") - TEMPERATURE_CONVERSION_COEFFICIENT);
+        long feelsLike = Math.round(openWeatherResponseDto.getMain().get("feels_like"));
         weatherResponseDto.setFeelsLike(feelsLike + "°C");
         //Присваиваем description
         weatherResponseDto.setDescription(capitalizeFirstLetter(openWeatherResponseDto.getWeather()[0].get("description")));
