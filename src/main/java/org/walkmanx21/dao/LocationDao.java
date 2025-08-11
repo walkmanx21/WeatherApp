@@ -1,5 +1,6 @@
 package org.walkmanx21.dao;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
@@ -27,8 +28,8 @@ public class LocationDao {
 
     @Transactional
     public void insertLocation (Location location) {
-        var hibernateSession = sessionFactory.getCurrentSession();
         try {
+            var hibernateSession = sessionFactory.getCurrentSession();
             hibernateSession.persist(location);
         } catch (JDBCConnectionException e) {
             throw new StorageUnavailableException("Storage Unavailable");
@@ -39,20 +40,28 @@ public class LocationDao {
 
     @Transactional
     public List<Location> getAllUserLocations(User user) {
-        var hibernateSession = sessionFactory.getCurrentSession();
-        String hql = "SELECT l FROM Location l WHERE l.user.id = :userId";
-        var selectionQuery = hibernateSession.createSelectionQuery(hql, Location.class);
-        selectionQuery.setParameter("userId", user.getId());
-        return selectionQuery.getResultList();
+        try {
+            var hibernateSession = sessionFactory.getCurrentSession();
+            String hql = "SELECT l FROM Location l WHERE l.user.id = :userId";
+            var selectionQuery = hibernateSession.createSelectionQuery(hql, Location.class);
+            selectionQuery.setParameter("userId", user.getId());
+            return selectionQuery.getResultList();
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
+        }
     }
 
     @Transactional
     public void deleteLocation(WeatherResponseDto weatherResponseDto, User user) {
-        var hibernateSession = sessionFactory.getCurrentSession();
-        String hql = "DELETE Location l WHERE l.user.id = :userId AND l.id = :locationId";
-        var mutationQuery = hibernateSession.createMutationQuery(hql);
-        mutationQuery.setParameter("userId", user.getId());
-        mutationQuery.setParameter("locationId", weatherResponseDto.getId());
-        mutationQuery.executeUpdate();
+        try {
+            var hibernateSession = sessionFactory.getCurrentSession();
+            String hql = "DELETE Location l WHERE l.user.id = :userId AND l.id = :locationId";
+            var mutationQuery = hibernateSession.createMutationQuery(hql);
+            mutationQuery.setParameter("userId", user.getId());
+            mutationQuery.setParameter("locationId", weatherResponseDto.getId());
+            mutationQuery.executeUpdate();
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
+        }
     }
 }

@@ -6,32 +6,26 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.view.RedirectView;
 import org.walkmanx21.dto.ErrorResponseDto;
+import org.walkmanx21.exceptions.BadRequestForWeatherApiServiceException;
 import org.walkmanx21.exceptions.LocationAlreadyExistException;
 import org.walkmanx21.exceptions.StorageUnavailableException;
+import org.walkmanx21.exceptions.WeatherApiServiceUnavailableException;
 
 @ControllerAdvice
 public class ExceptionHandlingFilterUtil {
 
-//    @ExceptionHandler(StorageUnavailableException.class)
-//    public ResponseEntity<ErrorResponseDto> handleStorageUnavailableException(StorageUnavailableException e) {
-//        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-//                HttpStatus.INTERNAL_SERVER_ERROR,
-//                e.getMessage()
-//        );
-//        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-
-    @ExceptionHandler(StorageUnavailableException.class)
-    public RedirectView handleStorageUnavailableException(StorageUnavailableException e) {
-        return new RedirectView("/error.html");
+    @ExceptionHandler({
+            StorageUnavailableException.class,
+            BadRequestForWeatherApiServiceException.class,
+            WeatherApiServiceUnavailableException.class
+    })
+    public RedirectView handleExceptionsForRedirectView (Exception e) {
+        return new RedirectView("/error");
     }
 
     @ExceptionHandler(LocationAlreadyExistException.class)
     public ResponseEntity<ErrorResponseDto> handleLocationAlreadyException(LocationAlreadyExistException e) {
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-                HttpStatus.CONFLICT,
-                e.getMessage()
-        );
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(HttpStatus.CONFLICT, e.getMessage());
         return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
     }
 }

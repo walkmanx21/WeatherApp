@@ -4,14 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.walkmanx21.dto.FoundLocationDto;
 import org.walkmanx21.dto.OpenWeatherResponseDto;
 import org.walkmanx21.dto.WeatherResponseDto;
+import org.walkmanx21.exceptions.BadRequestForWeatherApiServiceException;
+import org.walkmanx21.exceptions.WeatherApiServiceUnavailableException;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.util.HttpClientUtil;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class OpenWeatherService {
@@ -30,21 +34,32 @@ public class OpenWeatherService {
 
     public List<FoundLocationDto> findLocations (FoundLocationDto foundLocationDto) {
         String url ="http://api.openweathermap.org/geo/1.0/direct?q=" + foundLocationDto.getName() + "&limit=" + COUNT_OF_LOCATIONS_LIMIT + "&appid=" + apiKey;
-        ResponseEntity<FoundLocationDto[]> response = httpClient.getData(url, FoundLocationDto[].class);
-        if (response.getBody() != null)
-            return Arrays.asList(response.getBody());
-        else
-            return null;
+
+        try {
+            ResponseEntity<FoundLocationDto[]> response = httpClient.getData(url, FoundLocationDto[].class);
+            if (response != null)
+                return Arrays.asList(Objects.requireNonNull(response.getBody()));
+        } catch (HttpClientErrorException e) {
+            throwNewCustomExceptions(e);
+        }
+
+        return null;
     }
 
     public WeatherResponseDto getWeatherData(Location location) {
         String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location.getLatitude() + "&lon=" + location.getLongitude() + "&appid=" + apiKey + "&units=metric";
-        ResponseEntity<OpenWeatherResponseDto> response = httpClient.getData(url, OpenWeatherResponseDto.class);
-        OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
-        if (openWeatherResponseDto != null) {
-            openWeatherResponseDto.setId(location.getId());
-            return buildWeatherResponseDto(openWeatherResponseDto);
+
+        try {
+            ResponseEntity<OpenWeatherResponseDto> response = httpClient.getData(url, OpenWeatherResponseDto.class);
+            OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
+            if (openWeatherResponseDto != null) {
+                openWeatherResponseDto.setId(location.getId());
+                return buildWeatherResponseDto(openWeatherResponseDto);
+            }
+        } catch (HttpClientErrorException e) {
+            throwNewCustomExceptions(e);
         }
+
         return null;
     }
 
@@ -80,5 +95,14 @@ public class OpenWeatherService {
 
     private String capitalizeFirstLetter(String str) {
         return str.substring(0,1).toUpperCase()+str.substring(1);
+    }
+
+    private void throwNewCustomExceptions(HttpClientErrorException e) {
+        int errorCode = e.getStatusCode().value();
+        if (errorCode >= 400 && errorCode < 500) {
+            throw new BadRequestForWeatherApiServiceException("An uncorrected request. Check the request parameters.");
+        } else {
+            throw new WeatherApiServiceUnavailableException("The weather data service is unavailable.");
+        }
     }
 }

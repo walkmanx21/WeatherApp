@@ -1,5 +1,6 @@
 package org.walkmanx21.dao;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,19 @@ public class SessionDao {
     @Transactional
     public Optional<Session> getCurrentSession(UUID sessionId) {
 
-        var hibernateSession = sessionFactory.getCurrentSession();
-        String hql = "SELECT s FROM Session s WHERE s.id = :sessionId";
+        try {
+            var hibernateSession = sessionFactory.getCurrentSession();
+            String hql = "SELECT s FROM Session s WHERE s.id = :sessionId";
 
-        var selectionQuery = hibernateSession.createSelectionQuery(hql, Session.class);
-        selectionQuery.setParameter("sessionId", sessionId);
-        List<Session> findSessions = selectionQuery.getResultList();
+            var selectionQuery = hibernateSession.createSelectionQuery(hql, Session.class);
+            selectionQuery.setParameter("sessionId", sessionId);
+            List<Session> findSessions = selectionQuery.getResultList();
 
-        return findSessions.stream()
-                .filter(session -> session.getLocalDateTime().isAfter(LocalDateTime.now()))
-                .findFirst();
+            return findSessions.stream()
+                    .filter(session -> session.getLocalDateTime().isAfter(LocalDateTime.now()))
+                    .findFirst();
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
+        }
     }
 }

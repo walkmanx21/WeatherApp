@@ -4,9 +4,11 @@ import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.walkmanx21.exceptions.StorageUnavailableException;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.models.User;
@@ -28,6 +30,8 @@ public class UserDao {
             session.persist(user);
         } catch (ConstraintViolationException e) {
             throw new UserAlreadyExistException("User with this username already exists");
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
         }
         return user;
     }
@@ -43,6 +47,8 @@ public class UserDao {
             user = session.createSelectionQuery(hql, User.class).getSingleResult();
         } catch (NoResultException e) {
             throw new UserDoesNotExistException("User with this username was not found.");
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
         }
 
         return user;
@@ -61,6 +67,8 @@ public class UserDao {
             user = selectionQuery.getSingleResult();
         } catch (NoResultException e) {
             throw new UserDoesNotExistException("User with this username was not found.");
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
         }
 
         return user;
