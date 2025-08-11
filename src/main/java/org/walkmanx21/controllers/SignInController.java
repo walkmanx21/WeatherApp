@@ -15,19 +15,19 @@ import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.SetCookieUtil;
-import org.walkmanx21.util.UserRequestDtoValidator;
+import org.walkmanx21.util.UserRequestDtoValidatorUtil;
 
 @Controller("/sign-in")
 @RequestMapping("/sign-in")
 public class SignInController {
 
-    private final UserRequestDtoValidator userRequestDtoValidator;
+    private final UserRequestDtoValidatorUtil userRequestDtoValidatorUtil;
     private final UserService userService;
     private final SetCookieUtil createCookieUtil;
 
     @Autowired
-    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SetCookieUtil createCookieUtil) {
-        this.userRequestDtoValidator = userRequestDtoValidator;
+    public SignInController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, SetCookieUtil createCookieUtil) {
+        this.userRequestDtoValidatorUtil = userRequestDtoValidatorUtil;
         this.userService = userService;
         this.createCookieUtil = createCookieUtil;
     }
@@ -40,7 +40,7 @@ public class SignInController {
     @PostMapping
     public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response) {
 
-        userRequestDtoValidator.validate(userRequestDto, bindingResult);
+        userRequestDtoValidatorUtil.validate(userRequestDto, bindingResult);
 
         if (bindingResult.hasErrors())
             return "sign-in/sign-in-with-errors";

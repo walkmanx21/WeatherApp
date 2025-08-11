@@ -11,19 +11,19 @@ import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.SetCookieUtil;
-import org.walkmanx21.util.UserRequestDtoValidator;
+import org.walkmanx21.util.UserRequestDtoValidatorUtil;
 
 @Controller("/sign-up")
 @RequestMapping("/sign-up")
 public class SignUpController {
 
-    private final UserRequestDtoValidator userRequestDtoValidator;
+    private final UserRequestDtoValidatorUtil userRequestDtoValidatorUtil;
     private final UserService userService;
     private final SetCookieUtil createCookieUtil;
 
     @Autowired
-    public SignUpController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SetCookieUtil createCookieUtil) {
-        this.userRequestDtoValidator = userRequestDtoValidator;
+    public SignUpController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, SetCookieUtil createCookieUtil) {
+        this.userRequestDtoValidatorUtil = userRequestDtoValidatorUtil;
         this.userService = userService;
         this.createCookieUtil = createCookieUtil;
     }
@@ -36,7 +36,7 @@ public class SignUpController {
     @PostMapping
     public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response) {
 
-        userRequestDtoValidator.validate(userRequestDto, bindingResult);
+        userRequestDtoValidatorUtil.validate(userRequestDto, bindingResult);
 
         if (bindingResult.hasErrors())
             return "sign-up/sign-up-with-errors";

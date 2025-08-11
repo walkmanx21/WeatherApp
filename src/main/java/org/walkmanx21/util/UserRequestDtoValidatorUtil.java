@@ -6,7 +6,8 @@ import org.springframework.validation.Validator;
 import org.walkmanx21.dto.UserRequestDto;
 
 @Component
-public class UserRequestDtoValidator implements Validator {
+public class UserRequestDtoValidatorUtil implements Validator {
+
     @Override
     public boolean supports(Class<?> clazz) {
         return UserRequestDto.class.equals(clazz);
