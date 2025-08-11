@@ -1,21 +1,15 @@
 package org.walkmanx21.dao;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.query.Query;
-import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.models.User;
-
-import java.util.List;
-import java.util.Optional;
 
 @Component
 public class UserDao {

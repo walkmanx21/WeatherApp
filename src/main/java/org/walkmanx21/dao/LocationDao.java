@@ -26,7 +26,7 @@ public class LocationDao {
     }
 
     @Transactional
-    public Location insertLocation (Location location) {
+    public void insertLocation (Location location) {
         var hibernateSession = sessionFactory.getCurrentSession();
         try {
             hibernateSession.persist(location);
@@ -35,7 +35,6 @@ public class LocationDao {
         } catch (ConstraintViolationException e) {
             throw new LocationAlreadyExistException("Location is already exists");
         }
-        return null;
     }
 
     @Transactional

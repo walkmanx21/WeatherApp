@@ -1,6 +1,5 @@
 package org.walkmanx21.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,8 @@ import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
-import org.walkmanx21.services.SessionService;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.SetCookieUtil;
-import org.walkmanx21.util.SetSessionAttributesUtil;
 import org.walkmanx21.util.UserRequestDtoValidator;
 
 @Controller("/sign-in")
@@ -29,7 +26,7 @@ public class SignInController {
     private final SetCookieUtil createCookieUtil;
 
     @Autowired
-    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SessionService sessionService, SetSessionAttributesUtil setSessionAttributesUtil, SetCookieUtil createCookieUtil) {
+    public SignInController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SetCookieUtil createCookieUtil) {
         this.userRequestDtoValidator = userRequestDtoValidator;
         this.userService = userService;
         this.createCookieUtil = createCookieUtil;
@@ -41,7 +38,7 @@ public class SignInController {
     }
 
     @PostMapping
-    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response) {
 
         userRequestDtoValidator.validate(userRequestDto, bindingResult);
 
@@ -50,7 +47,7 @@ public class SignInController {
 
         try {
             UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
-            response.addCookie(createCookieUtil.setSessionId(userResponseDto));
+            createCookieUtil.setSessionId(userResponseDto, response);
         } catch (UserDoesNotExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());
             return "sign-in/sign-in-with-errors";

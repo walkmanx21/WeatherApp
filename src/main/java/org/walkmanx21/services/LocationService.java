@@ -1,16 +1,12 @@
 package org.walkmanx21.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.LocationDao;
 import org.walkmanx21.dto.FoundLocationDto;
-import org.walkmanx21.dto.OpenWeatherResponseDto;
 import org.walkmanx21.dto.WeatherResponseDto;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.models.User;
-import org.walkmanx21.util.HttpClientUtil;
 import org.walkmanx21.util.MappingUtil;
 
 import java.math.BigDecimal;
@@ -26,14 +22,14 @@ public class LocationService {
     private final OpenWeatherService openWeatherService;
 
     @Autowired
-    public LocationService(MappingUtil mappingUtil, LocationDao locationDao, HttpClientUtil httpClient, OpenWeatherService openWeatherService) {
+    public LocationService(MappingUtil mappingUtil, LocationDao locationDao, OpenWeatherService openWeatherService) {
         this.mappingUtil = mappingUtil;
         this.locationDao = locationDao;
         this.openWeatherService = openWeatherService;
     }
 
 
-    public FoundLocationDto[] findLocations(FoundLocationDto foundLocationDto) {
+    public List<FoundLocationDto> findLocations(FoundLocationDto foundLocationDto) {
         return openWeatherService.findLocations(foundLocationDto);
     }
 
@@ -55,9 +51,5 @@ public class LocationService {
 
     public void deleteLocation(WeatherResponseDto weatherResponseDto, User user) {
         locationDao.deleteLocation(weatherResponseDto, user);
-    }
-
-    private BigDecimal roundingUpCoordinate(BigDecimal coordinate) {
-        return coordinate.setScale(4, RoundingMode.HALF_UP);
     }
 }

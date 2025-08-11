@@ -1,19 +1,16 @@
 package org.walkmanx21.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.SetCookieUtil;
-import org.walkmanx21.util.SetSessionAttributesUtil;
 import org.walkmanx21.util.UserRequestDtoValidator;
 
 @Controller("/sign-up")
@@ -22,14 +19,12 @@ public class SignUpController {
 
     private final UserRequestDtoValidator userRequestDtoValidator;
     private final UserService userService;
-    private final SetSessionAttributesUtil setSessionAttributesUtil;
     private final SetCookieUtil createCookieUtil;
 
     @Autowired
-    public SignUpController(UserDao userDao, UserRequestDtoValidator userRequestDtoValidator, UserService userService, SetSessionAttributesUtil setSessionAttributesUtil, SetCookieUtil createCookieUtil) {
+    public SignUpController(UserRequestDtoValidator userRequestDtoValidator, UserService userService, SetCookieUtil createCookieUtil) {
         this.userRequestDtoValidator = userRequestDtoValidator;
         this.userService = userService;
-        this.setSessionAttributesUtil = setSessionAttributesUtil;
         this.createCookieUtil = createCookieUtil;
     }
 
@@ -39,7 +34,7 @@ public class SignUpController {
     }
 
     @PostMapping
-    public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response) {
+    public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response) {
 
         userRequestDtoValidator.validate(userRequestDto, bindingResult);
 
@@ -48,8 +43,7 @@ public class SignUpController {
 
         try {
             UserResponseDto userResponseDto = userService.registerUser(userRequestDto);
-            setSessionAttributesUtil.setSessionAttributes(request, userResponseDto);
-            response.addCookie(createCookieUtil.setSessionId(userResponseDto));
+            createCookieUtil.setSessionId(userResponseDto, response);
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());
             return "sign-up/sign-up-with-errors";

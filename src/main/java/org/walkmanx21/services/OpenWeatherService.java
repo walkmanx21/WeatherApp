@@ -10,6 +10,9 @@ import org.walkmanx21.dto.WeatherResponseDto;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.util.HttpClientUtil;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class OpenWeatherService {
 
@@ -25,10 +28,13 @@ public class OpenWeatherService {
         this.httpClient = httpClient;
     }
 
-    public FoundLocationDto[] findLocations (FoundLocationDto foundLocationDto) {
+    public List<FoundLocationDto> findLocations (FoundLocationDto foundLocationDto) {
         String url ="http://api.openweathermap.org/geo/1.0/direct?q=" + foundLocationDto.getName() + "&limit=" + COUNT_OF_LOCATIONS_LIMIT + "&appid=" + apiKey;
         ResponseEntity<FoundLocationDto[]> response = httpClient.getData(url, FoundLocationDto[].class);
-        return response.getBody();
+        if (response.getBody() != null)
+            return Arrays.asList(response.getBody());
+        else
+            return null;
     }
 
     public WeatherResponseDto getWeatherData(Location location) {

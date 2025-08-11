@@ -13,6 +13,7 @@ import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
 import org.walkmanx21.util.GetUserByCookieUtil;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,7 +34,7 @@ public class SearchController {
         Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
         mayBeUser.ifPresent(user -> model.addAttribute("user", user));
 
-        FoundLocationDto[] foundLocations = locationService.findLocations(foundLocationDto);
+        List<FoundLocationDto> foundLocations = locationService.findLocations(foundLocationDto);
         model.addAttribute("locations", foundLocations);
 
         return "search-result/search-results";

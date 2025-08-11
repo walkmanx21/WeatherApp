@@ -3,7 +3,6 @@ package org.walkmanx21.services;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
@@ -12,9 +11,6 @@ import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.util.MappingUtil;
 import org.walkmanx21.util.PasswordEncryptionUtil;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @Setter
@@ -26,7 +22,7 @@ public class UserService {
     private final SessionService sessionService;
 
     @Autowired
-    public UserService(UserDao userDao, MappingUtil mappingUtil, PasswordEncryptionUtil passwordEncryptionUtil, SessionDao sessionDao, SessionService sessionService) {
+    public UserService(UserDao userDao, MappingUtil mappingUtil, PasswordEncryptionUtil passwordEncryptionUtil, SessionService sessionService) {
         this.userDao = userDao;
         this.mappingUtil = mappingUtil;
         this.passwordEncryptionUtil = passwordEncryptionUtil;

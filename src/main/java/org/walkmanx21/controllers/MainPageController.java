@@ -2,6 +2,7 @@ package org.walkmanx21.controllers;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +34,7 @@ public class MainPageController {
     public String index(Model model, HttpServletRequest request) {
         Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
         mayBeUser.ifPresent(user -> model.addAttribute("user", user));
-        List<WeatherResponseDto> weatherResponseDtoList = null;
+        List<WeatherResponseDto> weatherResponseDtoList;
 
         if (mayBeUser.isPresent()) {
             weatherResponseDtoList = locationService.getWeatherDataForAllLocations(mayBeUser.get());
@@ -43,8 +44,8 @@ public class MainPageController {
     }
 
     @PostMapping
-    public String signOut (HttpServletRequest request) {
-        setCookieUtil.deleteSessionId(request);
+    public String signOut (HttpServletResponse response) {
+        setCookieUtil.deleteSessionId(response);
         return "index";
     }
 

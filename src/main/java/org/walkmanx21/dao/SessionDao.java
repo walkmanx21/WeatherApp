@@ -2,12 +2,10 @@ package org.walkmanx21.dao;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.JDBCConnectionException;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.walkmanx21.exceptions.StorageUnavailableException;
-import org.walkmanx21.models.Location;
 import org.walkmanx21.models.Session;
 
 import java.time.LocalDateTime;
