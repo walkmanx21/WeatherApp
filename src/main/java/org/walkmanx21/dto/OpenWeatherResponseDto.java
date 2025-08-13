@@ -12,6 +12,8 @@ import java.util.Map;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenWeatherResponseDto {
 
