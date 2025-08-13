@@ -1,6 +1,7 @@
 package org.walkmanx21.dao;
 
 import jakarta.persistence.NoResultException;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
