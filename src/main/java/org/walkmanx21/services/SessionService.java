@@ -2,6 +2,7 @@ package org.walkmanx21.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.models.Session;
@@ -32,5 +33,10 @@ public class SessionService {
 
     public Optional<Session> getCurrentSession(UUID sessionId) {
         return sessionDao.getCurrentSession(sessionId);
+    }
+
+    @Scheduled(fixedRateString = "1d")
+    public void cleanExpiredSessions() {
+        sessionDao.deleteExpiredSessions();
     }
 }

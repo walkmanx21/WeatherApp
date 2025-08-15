@@ -1,8 +1,8 @@
 package org.walkmanx21.dao;
 
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.query.MutationQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +48,21 @@ public class SessionDao {
             return findSessions.stream()
                     .filter(session -> session.getLocalDateTime().isAfter(LocalDateTime.now()))
                     .findFirst();
+        } catch (JDBCConnectionException e) {
+            throw new StorageUnavailableException("Storage Unavailable");
+        }
+    }
+
+    @Transactional
+    public void deleteExpiredSessions(){
+        String hql = "DELETE Session s WHERE s.localDateTime < :now";
+        var hibernateSession = sessionFactory.getCurrentSession();
+
+        try {
+            MutationQuery mutationQuery = hibernateSession.createMutationQuery(hql);
+            mutationQuery.setParameter("now", LocalDateTime.now());
+            mutationQuery.executeUpdate();
+
         } catch (JDBCConnectionException e) {
             throw new StorageUnavailableException("Storage Unavailable");
         }
