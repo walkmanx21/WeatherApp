@@ -12,6 +12,7 @@ import org.walkmanx21.exceptions.BadRequestForWeatherApiServiceException;
 import org.walkmanx21.exceptions.WeatherApiServiceUnavailableException;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.util.HttpClientUtil;
+import org.walkmanx21.util.MappingUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Component
 public class OpenWeatherService {
 
+    private final MappingUtil mappingUtil;
     @Value("${api.key}")
     private String apiKey;
 
@@ -28,8 +30,9 @@ public class OpenWeatherService {
     private final HttpClientUtil httpClient;
 
     @Autowired
-    public OpenWeatherService(HttpClientUtil httpClient) {
+    public OpenWeatherService(HttpClientUtil httpClient, MappingUtil mappingUtil) {
         this.httpClient = httpClient;
+        this.mappingUtil = mappingUtil;
     }
 
     public List<FoundLocationDto> findLocations (FoundLocationDto foundLocationDto) {
@@ -54,7 +57,8 @@ public class OpenWeatherService {
             OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
             if (openWeatherResponseDto != null) {
                 openWeatherResponseDto.setId(location.getId());
-                return buildWeatherResponseDto(openWeatherResponseDto);
+                return mappingUtil.convertToWeatherResponseDto(openWeatherResponseDto);
+//                return buildWeatherResponseDto(openWeatherResponseDto);
             }
         } catch (HttpClientErrorException e) {
             throwNewCustomExceptions(e);
