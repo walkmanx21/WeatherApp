@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.walkmanx21.config.DataSourceConfig;
 import org.walkmanx21.config.FlywayConfig;
 import org.walkmanx21.config.PropertyConfig;
+import org.walkmanx21.dao.SessionDao;
+import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
@@ -22,6 +24,7 @@ import org.walkmanx21.models.User;
 import org.walkmanx21.services.SessionService;
 import org.walkmanx21.services.UserService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +43,12 @@ public class SessionServiceIT {
 
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private SessionDao sessionDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @BeforeEach
     void prepare() {
@@ -60,6 +69,16 @@ public class SessionServiceIT {
         Thread.sleep(2000);
         Optional<Session> currentSession = sessionService.getCurrentSession(sessionId);
         Assertions.assertFalse(currentSession.isPresent());
+    }
+
+    @Test
+    void whenCleanExpiresSessionsThanTheyBeingCleansed() {
+        User user = new User(0, "walkmanx22", "123456");
+        user = userDao.insertUser(user);
+        Session session = new Session(UUID.randomUUID(), user, LocalDateTime.now().minusDays(1));
+        sessionDao.insertSession(session);
+        sessionService.cleanExpiredSessions();
+        Assertions.assertEquals(Optional.empty(), sessionService.getCurrentSession(session.getId()));
     }
 
 }
