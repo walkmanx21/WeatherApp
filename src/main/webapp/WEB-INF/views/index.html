@@ -57,14 +57,14 @@
                              th:src="@{'https://openweathermap.org/img/wn/' + ${weatherResponseDto.getWeatherIcon()} + '@4x.png'}"
                              alt="Weather icon">
                         <div class="card-body d-flex flex-column">
-                            <h1 class="card-text" th:text="${weatherResponseDto.getTemperature()}">Temperature</h1>
+                            <h1 class="card-text" th:text="${weatherResponseDto.getTemperature()} + '°C'">Temperature</h1>
                             <h3 class="card-title"
                                 th:text="${weatherResponseDto.getName()} + ', ' + ${weatherResponseDto.getCountry()}">
                                 Name, Country</h3>
                             <p class="card-text mb-1"
-                               th:text="'Feels like ' + ${weatherResponseDto.getFeelsLike()} + '. ' + ${weatherResponseDto.getDescription()}">
+                               th:text="'Feels like ' + ${weatherResponseDto.getFeelsLike()} + '°C. ' + ${weatherResponseDto.getDescription()}">
                                 Feels like <span>2</span>°C.<span>Clear sky</span></p>
-                            <p class="card-text mb-1" th:text="'Humidity ' + ${weatherResponseDto.getHumidity()}">
+                            <p class="card-text mb-1" th:text="'Humidity ' + ${weatherResponseDto.getHumidity()} + '%'">
                                 Humidity</p>
                         </div>
                     </div>

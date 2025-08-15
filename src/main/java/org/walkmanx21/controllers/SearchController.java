@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.walkmanx21.dto.FoundLocationDto;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
-import org.walkmanx21.util.GetUserByCookieUtil;
+import org.walkmanx21.util.CookieUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,17 +21,17 @@ import java.util.Optional;
 public class SearchController {
 
     private final LocationService locationService;
-    private final GetUserByCookieUtil getUserByCookieUtil;
+    private final CookieUtil cookieUtil;
 
     @Autowired
-    public SearchController(LocationService locationService, GetUserByCookieUtil getUserByCookieUtil) {
+    public SearchController(LocationService locationService, CookieUtil cookieUtil) {
         this.locationService = locationService;
-        this.getUserByCookieUtil = getUserByCookieUtil;
+        this.cookieUtil = cookieUtil;
     }
 
     @GetMapping
     public String searchLocation(@ModelAttribute("locationDto") FoundLocationDto foundLocationDto, Model model, HttpServletRequest request) {
-        Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
+        Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
         mayBeUser.ifPresent(user -> model.addAttribute("user", user));
 
         List<FoundLocationDto> foundLocations = locationService.findLocations(foundLocationDto);
@@ -43,7 +43,7 @@ public class SearchController {
     @PostMapping
     public String addLocation(@ModelAttribute("locationDto") FoundLocationDto foundLocationDto, HttpServletRequest request) {
 
-        Optional<User> mayBeUser = getUserByCookieUtil.getUserByCookie(request);
+        Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
         if (mayBeUser.isPresent()) {
             locationService.addLocation(foundLocationDto, mayBeUser.get());
             return "redirect:/";

@@ -14,7 +14,7 @@ import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
 import org.walkmanx21.services.UserService;
-import org.walkmanx21.util.SetCookieUtil;
+import org.walkmanx21.util.CookieUtil;
 import org.walkmanx21.util.UserRequestDtoValidatorUtil;
 
 @Controller("/sign-in")
@@ -23,10 +23,10 @@ public class SignInController {
 
     private final UserRequestDtoValidatorUtil userRequestDtoValidatorUtil;
     private final UserService userService;
-    private final SetCookieUtil createCookieUtil;
+    private final CookieUtil createCookieUtil;
 
     @Autowired
-    public SignInController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, SetCookieUtil createCookieUtil) {
+    public SignInController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, CookieUtil createCookieUtil) {
         this.userRequestDtoValidatorUtil = userRequestDtoValidatorUtil;
         this.userService = userService;
         this.createCookieUtil = createCookieUtil;

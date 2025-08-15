@@ -57,8 +57,7 @@ public class OpenWeatherService {
             OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
             if (openWeatherResponseDto != null) {
                 openWeatherResponseDto.setId(location.getId());
-                return mappingUtil.convertToWeatherResponseDto(openWeatherResponseDto);
-//                return buildWeatherResponseDto(openWeatherResponseDto);
+                return buildWeatherResponseDto(openWeatherResponseDto);
             }
         } catch (HttpClientErrorException e) {
             throwNewCustomExceptions(e);
@@ -68,30 +67,17 @@ public class OpenWeatherService {
     }
 
     private WeatherResponseDto buildWeatherResponseDto(OpenWeatherResponseDto openWeatherResponseDto) {
-
         WeatherResponseDto weatherResponseDto = new WeatherResponseDto();
 
-        //Присваиваем id
         weatherResponseDto.setId(openWeatherResponseDto.getId());
-        //Присваиваем имя
         weatherResponseDto.setName(openWeatherResponseDto.getName());
-        //Присваиваем страну
         weatherResponseDto.setCountry(openWeatherResponseDto.getSys().get("country"));
-        //Присваиваем latitude
         weatherResponseDto.setLatitude(openWeatherResponseDto.getCoord().get("lat"));
-        //Присваиваем longitude
         weatherResponseDto.setLongitude(openWeatherResponseDto.getCoord().get("lon"));
-        //Присваиваем температуру
-        long temperature = Math.round(openWeatherResponseDto.getMain().get("temp"));
-        weatherResponseDto.setTemperature(temperature + "°C");
-        //Присваиваем "ощущается как"
-        long feelsLike = Math.round(openWeatherResponseDto.getMain().get("feels_like"));
-        weatherResponseDto.setFeelsLike(feelsLike + "°C");
-        //Присваиваем description
+        weatherResponseDto.setTemperature((int) Math.round(openWeatherResponseDto.getMain().get("temp")));
+        weatherResponseDto.setFeelsLike((int) Math.round(openWeatherResponseDto.getMain().get("feels_like")));
         weatherResponseDto.setDescription(capitalizeFirstLetter(openWeatherResponseDto.getWeather()[0].get("description")));
-        //Присваиваем влажность
-        weatherResponseDto.setHumidity(openWeatherResponseDto.getMain().get("humidity").toString() + "%");
-        //Присваиваем иконку погоды
+        weatherResponseDto.setHumidity(openWeatherResponseDto.getMain().get("humidity").toString());
         weatherResponseDto.setWeatherIcon(openWeatherResponseDto.getWeather()[0].get("icon"));
 
         return weatherResponseDto;

@@ -18,8 +18,8 @@ public class WeatherResponseDto {
     private String country;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private String temperature;
-    private String feelsLike;
+    private int temperature;
+    private int feelsLike;
     private String description;
     private String humidity;
     private String weatherIcon;

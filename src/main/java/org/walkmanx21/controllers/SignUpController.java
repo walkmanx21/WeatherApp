@@ -10,7 +10,7 @@ import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.services.UserService;
-import org.walkmanx21.util.SetCookieUtil;
+import org.walkmanx21.util.CookieUtil;
 import org.walkmanx21.util.UserRequestDtoValidatorUtil;
 
 @Controller("/sign-up")
@@ -19,10 +19,10 @@ public class SignUpController {
 
     private final UserRequestDtoValidatorUtil userRequestDtoValidatorUtil;
     private final UserService userService;
-    private final SetCookieUtil createCookieUtil;
+    private final CookieUtil createCookieUtil;
 
     @Autowired
-    public SignUpController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, SetCookieUtil createCookieUtil) {
+    public SignUpController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, CookieUtil createCookieUtil) {
         this.userRequestDtoValidatorUtil = userRequestDtoValidatorUtil;
         this.userService = userService;
         this.createCookieUtil = createCookieUtil;
