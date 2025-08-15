@@ -28,8 +28,12 @@ public class GetUserByCookieUtil {
 
     public Optional<User> getUserByCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        Optional<Cookie> mayBeCookie = Arrays.stream(cookies).filter(c -> c.getName().equals("sessionId"))
-                .findFirst();
+        Optional<Cookie> mayBeCookie = Optional.empty();
+        if (cookies != null) {
+             mayBeCookie = Arrays.stream(cookies).filter(c -> c.getName().equals("sessionId"))
+                    .findFirst();
+        }
+
         if (mayBeCookie.isPresent()) {
             UUID sessionId = UUID.fromString(mayBeCookie.get().getValue());
             Optional<Session> mayBeSession = sessionService.getCurrentSession(sessionId);
