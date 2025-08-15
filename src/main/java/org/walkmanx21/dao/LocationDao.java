@@ -20,7 +20,6 @@ public class LocationDao {
 
     private final SessionFactory sessionFactory;
 
-
     @Autowired
     public LocationDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -40,9 +39,10 @@ public class LocationDao {
 
     @Transactional
     public List<Location> getAllUserLocations(User user) {
+        String hql = "SELECT l FROM Location l WHERE l.user.id = :userId";
+        var hibernateSession = sessionFactory.getCurrentSession();
+
         try {
-            var hibernateSession = sessionFactory.getCurrentSession();
-            String hql = "SELECT l FROM Location l WHERE l.user.id = :userId";
             var selectionQuery = hibernateSession.createSelectionQuery(hql, Location.class);
             selectionQuery.setParameter("userId", user.getId());
             return selectionQuery.getResultList();
@@ -52,14 +52,10 @@ public class LocationDao {
     }
 
     @Transactional
-    public void deleteLocation(WeatherResponseDto weatherResponseDto, User user) {
+    public void deleteLocation(Location location) {
         try {
             var hibernateSession = sessionFactory.getCurrentSession();
-            String hql = "DELETE Location l WHERE l.user.id = :userId AND l.id = :locationId";
-            var mutationQuery = hibernateSession.createMutationQuery(hql);
-            mutationQuery.setParameter("userId", user.getId());
-            mutationQuery.setParameter("locationId", weatherResponseDto.getId());
-            mutationQuery.executeUpdate();
+            hibernateSession.remove(location);
         } catch (JDBCConnectionException e) {
             throw new StorageUnavailableException("Storage Unavailable");
         }

@@ -37,10 +37,10 @@ public class SessionDao {
     @Transactional
     public Optional<Session> getCurrentSession(UUID sessionId) {
 
-        try {
-            var hibernateSession = sessionFactory.getCurrentSession();
-            String hql = "SELECT s FROM Session s WHERE s.id = :sessionId";
+        String hql = "SELECT s FROM Session s WHERE s.id = :sessionId";
+        var hibernateSession = sessionFactory.getCurrentSession();
 
+        try {
             var selectionQuery = hibernateSession.createSelectionQuery(hql, Session.class);
             selectionQuery.setParameter("sessionId", sessionId);
             List<Session> findSessions = selectionQuery.getResultList();

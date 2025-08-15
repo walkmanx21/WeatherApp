@@ -27,4 +27,9 @@ public class MappingUtil {
         return MODEL_MAPPER.map(foundLocationDto, Location.class);
     }
 
+    public Location convertToLocation (WeatherResponseDto weatherResponseDto) {
+        return MODEL_MAPPER.map(weatherResponseDto, Location.class);
+    }
+
+
 }

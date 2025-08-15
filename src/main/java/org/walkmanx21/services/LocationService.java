@@ -47,6 +47,8 @@ public class LocationService {
 
 
     public void deleteLocation(WeatherResponseDto weatherResponseDto, User user) {
-        locationDao.deleteLocation(weatherResponseDto, user);
+        Location location = mappingUtil.convertToLocation(weatherResponseDto);
+        location.setUser(user);
+        locationDao.deleteLocation(location);
     }
 }
