@@ -1,5 +1,6 @@
 package org.walkmanx21.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class SignInController {
     }
 
     @PostMapping
-    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response) {
+    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
 
         userRequestDtoValidatorUtil.validate(userRequestDto, bindingResult);
 
@@ -54,6 +55,11 @@ public class SignInController {
         } catch (WrongPasswordException e) {
             bindingResult.rejectValue("password", "", e.getMessage());
             return "sign-in/sign-in-with-errors";
+        }
+
+        Object requestURI = request.getSession().getAttribute("requestURI");
+        if (requestURI != null) {
+            return "redirect:" + requestURI;
         }
 
         return "redirect:/";
