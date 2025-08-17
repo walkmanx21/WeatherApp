@@ -12,7 +12,6 @@ import org.walkmanx21.exceptions.BadRequestForWeatherApiServiceException;
 import org.walkmanx21.exceptions.WeatherApiServiceUnavailableException;
 import org.walkmanx21.models.Location;
 import org.walkmanx21.util.HttpClientUtil;
-import org.walkmanx21.util.MappingUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Objects;
 @Component
 public class OpenWeatherService {
 
-    private final MappingUtil mappingUtil;
     @Value("${OPENWEATHER_API_KEY}")
     private String apiKey;
 
@@ -30,9 +28,8 @@ public class OpenWeatherService {
     private final HttpClientUtil httpClient;
 
     @Autowired
-    public OpenWeatherService(HttpClientUtil httpClient, MappingUtil mappingUtil) {
+    public OpenWeatherService(HttpClientUtil httpClient) {
         this.httpClient = httpClient;
-        this.mappingUtil = mappingUtil;
     }
 
     public List<FoundLocationDto> findLocations (FoundLocationDto foundLocationDto) {
@@ -57,7 +54,7 @@ public class OpenWeatherService {
             OpenWeatherResponseDto openWeatherResponseDto = response.getBody();
             if (openWeatherResponseDto != null) {
                 openWeatherResponseDto.setId(location.getId());
-                return buildWeatherResponseDto(openWeatherResponseDto);
+                return buildWeatherResponseDto(openWeatherResponseDto, location);
             }
         } catch (HttpClientErrorException e) {
             throwNewCustomExceptions(e);
@@ -66,11 +63,11 @@ public class OpenWeatherService {
         return null;
     }
 
-    private WeatherResponseDto buildWeatherResponseDto(OpenWeatherResponseDto openWeatherResponseDto) {
+    private WeatherResponseDto buildWeatherResponseDto(OpenWeatherResponseDto openWeatherResponseDto, Location location) {
         WeatherResponseDto weatherResponseDto = new WeatherResponseDto();
 
         weatherResponseDto.setId(openWeatherResponseDto.getId());
-        weatherResponseDto.setName(openWeatherResponseDto.getName());
+        weatherResponseDto.setName(location.getName());
         weatherResponseDto.setCountry(openWeatherResponseDto.getSys().get("country"));
         weatherResponseDto.setLatitude(openWeatherResponseDto.getCoord().get("lat"));
         weatherResponseDto.setLongitude(openWeatherResponseDto.getCoord().get("lon"));

@@ -1,14 +1,17 @@
 package org.walkmanx21.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.walkmanx21.dto.FoundLocationDto;
+import org.walkmanx21.exceptions.LocationAlreadyExistException;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
 import org.walkmanx21.util.CookieUtil;
@@ -41,7 +44,7 @@ public class SearchController {
         }
 
         if (request.getSession().getAttribute("requestUrl") != null) {
-            foundLocationDto = returnRequestFromSignIn(foundLocationDto, request);
+            foundLocationDto = returnRequestFromSignIn(request);
         }
 
         List<FoundLocationDto> foundLocations = locationService.findLocations(foundLocationDto);
@@ -51,14 +54,23 @@ public class SearchController {
     }
 
     @PostMapping
-    public String addLocation(@ModelAttribute("locationDto") FoundLocationDto foundLocationDto, HttpServletRequest request) {
+    public String addLocation(@ModelAttribute("locationDto") @Valid FoundLocationDto foundLocationDto, BindingResult bindingResult, Model model, HttpServletRequest request) {
+
+        if (bindingResult.hasErrors())
+            return "search-result/search-results-with-errors";
 
         Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
-        if (mayBeUser.isPresent()) {
-            locationService.addLocation(foundLocationDto, mayBeUser.get());
-            return "redirect:/";
-        } else {
+        mayBeUser.ifPresent(user -> model.addAttribute("user", user));
 
+        if (mayBeUser.isPresent()) {
+            try {
+                locationService.addLocation(foundLocationDto, mayBeUser.get());
+                return "redirect:/";
+            } catch (LocationAlreadyExistException e) {
+                bindingResult.rejectValue("name", "", e.getMessage());
+                return "search-result/search-results-with-errors";
+            }
+        } else {
             return "redirect:/sign-in";
         }
     }
@@ -66,14 +78,13 @@ public class SearchController {
     private void setRequestAttributes(FoundLocationDto foundLocationDto, HttpServletRequest request) {
             request.getSession().setAttribute("requestUrl", request.getRequestURL());
             request.getSession().setAttribute("foundLocationDto", foundLocationDto);
-
     }
 
-    private FoundLocationDto returnRequestFromSignIn(FoundLocationDto foundLocationDto, HttpServletRequest request) {
-            foundLocationDto = (FoundLocationDto) request.getSession().getAttribute("foundLocationDto");
-            request.getSession().removeAttribute("requestUrl");
-            request.getSession().removeAttribute("foundLocationDto");
-            return foundLocationDto;
+    private FoundLocationDto returnRequestFromSignIn(HttpServletRequest request) {
+        FoundLocationDto foundLocationDto = (FoundLocationDto) request.getSession().getAttribute("foundLocationDto");
+        request.getSession().removeAttribute("requestUrl");
+        request.getSession().removeAttribute("foundLocationDto");
+        return foundLocationDto;
     }
 
 }

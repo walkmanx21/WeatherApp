@@ -1,7 +1,6 @@
 package org.walkmanx21.util;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dto.*;
 import org.walkmanx21.models.Location;
