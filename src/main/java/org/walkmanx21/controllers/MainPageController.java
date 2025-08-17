@@ -43,7 +43,7 @@ public class MainPageController {
     @PostMapping
     public String signOut (HttpServletResponse response) {
         cookieUtil.deleteSessionId(response);
-        return "index";
+        return "redirect:/";
     }
 
     @DeleteMapping

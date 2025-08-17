@@ -40,7 +40,7 @@ public class SearchController {
             return "redirect:/sign-in";
         }
 
-        if (request.getSession().getAttribute("requestURI") != null) {
+        if (request.getSession().getAttribute("requestUrl") != null) {
             foundLocationDto = returnRequestFromSignIn(foundLocationDto, request);
         }
 
@@ -64,14 +64,14 @@ public class SearchController {
     }
 
     private void setRequestAttributes(FoundLocationDto foundLocationDto, HttpServletRequest request) {
-            request.getSession().setAttribute("requestURI", request.getRequestURI());
+            request.getSession().setAttribute("requestUrl", request.getRequestURL());
             request.getSession().setAttribute("foundLocationDto", foundLocationDto);
 
     }
 
     private FoundLocationDto returnRequestFromSignIn(FoundLocationDto foundLocationDto, HttpServletRequest request) {
             foundLocationDto = (FoundLocationDto) request.getSession().getAttribute("foundLocationDto");
-            request.getSession().removeAttribute("requestURI");
+            request.getSession().removeAttribute("requestUrl");
             request.getSession().removeAttribute("foundLocationDto");
             return foundLocationDto;
     }

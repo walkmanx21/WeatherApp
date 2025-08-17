@@ -57,9 +57,9 @@ public class SignInController {
             return "sign-in/sign-in-with-errors";
         }
 
-        Object requestURI = request.getSession().getAttribute("requestURI");
-        if (requestURI != null) {
-            return "redirect:" + requestURI;
+        Object requestUrl = request.getSession().getAttribute("requestUrl");
+        if (requestUrl != null) {
+            return "redirect:" + requestUrl;
         }
 
         return "redirect:/";

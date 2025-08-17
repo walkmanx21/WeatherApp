@@ -22,7 +22,7 @@ import java.util.Objects;
 public class OpenWeatherService {
 
     private final MappingUtil mappingUtil;
-    @Value("${api.key}")
+    @Value("${OPENWEATHER_API_KEY}")
     private String apiKey;
 
     private static final int COUNT_OF_LOCATIONS_LIMIT = 5;

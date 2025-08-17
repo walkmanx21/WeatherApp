@@ -21,3 +21,5 @@ CREATE TABLE IF NOT EXISTS Sessions
     user_id    INTEGER REFERENCES users (id) NOT NULL,
     expires_at TIMESTAMP                     NOT NULL
 );
+
+CREATE INDEX expires_at ON Sessions (expires_at);
