@@ -20,6 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.walkmanx21.config.DataSourceConfig;
 import org.walkmanx21.config.FlywayConfig;
 import org.walkmanx21.config.PropertyConfig;
+import org.walkmanx21.config.ScheduleConfig;
 import org.walkmanx21.dto.FoundLocationDto;
 import org.walkmanx21.dto.OpenWeatherResponseDto;
 import org.walkmanx21.dto.WeatherResponseDto;
@@ -36,12 +37,12 @@ import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {DataSourceConfig.class, FlywayConfig.class, PropertyConfig.class})
+@ContextConfiguration(classes = {DataSourceConfig.class, FlywayConfig.class, PropertyConfig.class, ScheduleConfig.class})
 @ActiveProfiles("test")
 @Transactional
 public class OpenWeatherServiceIT {
 
-    @Value("${api.key}")
+    @Value("${OPENWEATHER_API_KEY}")
     private String apiKey;
     private static final int COUNT_OF_LOCATIONS_LIMIT = 5;
 
