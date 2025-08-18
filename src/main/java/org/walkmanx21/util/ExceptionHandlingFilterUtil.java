@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.walkmanx21.dto.ErrorResponseDto;
 import org.walkmanx21.exceptions.BadRequestForWeatherApiServiceException;
 import org.walkmanx21.exceptions.LocationAlreadyExistException;
@@ -19,13 +20,14 @@ public class ExceptionHandlingFilterUtil {
             BadRequestForWeatherApiServiceException.class,
             WeatherApiServiceUnavailableException.class
     })
-    public RedirectView handleExceptionsForRedirectView (Exception e) {
-        return new RedirectView("/error");
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ModelAndView handleExceptionsForRedirectView (Exception e) {
+        return new ModelAndView("/error");
     }
 
-    @ExceptionHandler(LocationAlreadyExistException.class)
-    public ResponseEntity<ErrorResponseDto> handleLocationAlreadyException(LocationAlreadyExistException e) {
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(HttpStatus.CONFLICT, e.getMessage());
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ModelAndView handleException(Exception e) {
+        return new ModelAndView("/error");
     }
 }
