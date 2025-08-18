@@ -16,6 +16,7 @@ public class WeatherResponseDto {
     private int id;
     private String name;
     private String country;
+    private String state;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private int temperature;

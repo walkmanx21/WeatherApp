@@ -69,6 +69,7 @@ public class OpenWeatherService {
         weatherResponseDto.setId(openWeatherResponseDto.getId());
         weatherResponseDto.setName(location.getName());
         weatherResponseDto.setCountry(openWeatherResponseDto.getSys().get("country"));
+        weatherResponseDto.setState(location.getState());
         weatherResponseDto.setLatitude(openWeatherResponseDto.getCoord().get("lat"));
         weatherResponseDto.setLongitude(openWeatherResponseDto.getCoord().get("lon"));
         weatherResponseDto.setTemperature((int) Math.round(openWeatherResponseDto.getMain().get("temp")));

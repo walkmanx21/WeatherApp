@@ -62,6 +62,12 @@
                                 th:text="${weatherResponseDto.getName()} + ', ' + ${weatherResponseDto.getCountry()}">
                                 Name, Country</h3>
                             <p class="card-text mb-1"
+                               th:text="'Latitude: ' + ${weatherResponseDto.getLatitude()}">
+                            </p>
+                            <p class="card-text mb-1"
+                               th:text="'Longitude: ' + ${weatherResponseDto.getLongitude()}">
+                            </p>
+                            <p class="card-text mb-1"
                                th:text="'Feels like ' + ${weatherResponseDto.getFeelsLike()} + '°C. ' + ${weatherResponseDto.getDescription()}">
                                 Feels like <span>2</span>°C.<span>Clear sky</span></p>
                             <p class="card-text mb-1" th:text="'Humidity ' + ${weatherResponseDto.getHumidity()} + '%'">

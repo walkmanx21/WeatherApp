@@ -23,7 +23,7 @@ public class ExceptionHandlingFilterUtil {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView handleException(Exception e) {
         return buildModelAndView("The requested page was not found");
     }
