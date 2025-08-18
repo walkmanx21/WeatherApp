@@ -36,8 +36,11 @@ public class MainPageController {
         if (mayBeUser.isPresent()) {
             weatherResponseDtoList = locationService.getWeatherDataForAllLocations(mayBeUser.get());
             model.addAttribute("weatherResponseDtoList", weatherResponseDtoList);
+            return "index";
+        } else {
+            return "redirect:/sign-in";
         }
-        return "index";
+
     }
 
     @PostMapping
