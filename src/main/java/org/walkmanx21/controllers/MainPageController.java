@@ -8,14 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.WeatherResponseDto;
-import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
 import org.walkmanx21.services.SessionService;
 import org.walkmanx21.services.UserService;
-import org.walkmanx21.util.CookieUtil;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller("/")
 public class MainPageController {

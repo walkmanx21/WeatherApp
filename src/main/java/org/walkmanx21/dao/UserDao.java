@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.query.SelectionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,13 +39,15 @@ public class UserDao {
 
     @Transactional
     public User getUser(String login) {
-        String hql = "FROM User WHERE login = '" + login + "'";
+        String hql = "SELECT u FROM User u WHERE u.login = :userLogin";
 
         Session session = sessionFactory.getCurrentSession();
         User user;
 
         try {
-            user = session.createSelectionQuery(hql, User.class).getSingleResult();
+            var selectionQuery = session.createSelectionQuery(hql, User.class);
+            selectionQuery.setParameter("userLogin", login);
+            user = selectionQuery.getSingleResult();
         } catch (NoResultException e) {
             throw new UserDoesNotExistException("User with this username was not found.");
         } catch (JDBCConnectionException e) {

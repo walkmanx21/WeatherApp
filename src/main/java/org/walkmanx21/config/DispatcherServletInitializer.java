@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class MySpringMvсDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {return new Class[]{PropertyConfig.class, DataSourceConfig.class, FlywayConfig.class};}
