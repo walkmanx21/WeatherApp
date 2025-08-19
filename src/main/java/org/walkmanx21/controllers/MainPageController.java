@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.WeatherResponseDto;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
+import org.walkmanx21.services.SessionService;
+import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.CookieUtil;
 
 import java.util.List;
@@ -18,46 +20,37 @@ import java.util.Optional;
 @Controller("/")
 public class MainPageController {
 
-    private final CookieUtil cookieUtil;
     private final LocationService locationService;
+    private final SessionService sessionService;
+    private final UserService userService;
 
     @Autowired
-    public MainPageController(CookieUtil cookieUtil, LocationService locationService) {
-        this.cookieUtil = cookieUtil;
+    public MainPageController(LocationService locationService, SessionService sessionService, UserService userService) {
         this.locationService = locationService;
+        this.sessionService = sessionService;
+        this.userService = userService;
     }
 
     @GetMapping
     public String index(Model model, HttpServletRequest request) {
-        Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
-        mayBeUser.ifPresent(user -> model.addAttribute("user", user));
-        List<WeatherResponseDto> weatherResponseDtoList;
-
-        if (mayBeUser.isPresent()) {
-            weatherResponseDtoList = locationService.getWeatherDataForAllLocations(mayBeUser.get());
-            model.addAttribute("weatherResponseDtoList", weatherResponseDtoList);
+        return userService.getUserByCookie(request).map(user -> {
+            model.addAttribute("user", user);
+            model.addAttribute("weatherResponseDtoList", locationService.getWeatherDataForAllLocations(user));
             return "index";
-        } else {
-            return "redirect:/sign-in";
-        }
-
+        }).orElse("redirect:/sign-in");
     }
 
     @PostMapping
     public String signOut (HttpServletResponse response) {
-        cookieUtil.deleteSessionId(response);
+        sessionService.deleteSessionId(response);
         return "redirect:/";
     }
 
     @DeleteMapping
     public String deleteLocation(@ModelAttribute ("weatherResponseDto") WeatherResponseDto weatherResponseDto, HttpServletRequest request) {
-        Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
-        if (mayBeUser.isPresent()) {
-            User user = mayBeUser.get();
-            locationService.deleteLocation(weatherResponseDto, user);
-        }
-
+        userService.getUserByCookie(request).ifPresent(user -> locationService.deleteLocation(weatherResponseDto, user));
         return "redirect:/";
+
     }
 
 }

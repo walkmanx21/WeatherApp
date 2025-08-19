@@ -14,6 +14,7 @@ import org.walkmanx21.dto.FoundLocationDto;
 import org.walkmanx21.exceptions.LocationAlreadyExistException;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.LocationService;
+import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.CookieUtil;
 
 import java.util.List;
@@ -24,18 +25,18 @@ import java.util.Optional;
 public class SearchController {
 
     private final LocationService locationService;
-    private final CookieUtil cookieUtil;
+    private final UserService userService;
 
     @Autowired
-    public SearchController(LocationService locationService, CookieUtil cookieUtil) {
+    public SearchController(LocationService locationService, CookieUtil cookieUtil, UserService userService) {
         this.locationService = locationService;
-        this.cookieUtil = cookieUtil;
+        this.userService = userService;
     }
 
     @GetMapping
     public String searchLocation(@ModelAttribute("locationDto") FoundLocationDto foundLocationDto, Model model, HttpServletRequest request) {
 
-        Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
+        Optional<User> mayBeUser = userService.getUserByCookie(request);
         mayBeUser.ifPresent(user -> model.addAttribute("user", user));
 
         if (mayBeUser.isEmpty()) {
@@ -59,7 +60,7 @@ public class SearchController {
         if (bindingResult.hasErrors())
             return "search-result/search-results-with-errors";
 
-        Optional<User> mayBeUser = cookieUtil.getUserByCookie(request);
+        Optional<User> mayBeUser = userService.getUserByCookie(request);
         mayBeUser.ifPresent(user -> model.addAttribute("user", user));
 
         if (mayBeUser.isPresent()) {

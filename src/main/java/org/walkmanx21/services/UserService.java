@@ -1,5 +1,7 @@
 package org.walkmanx21.services;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,10 @@ import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.util.MappingUtil;
 import org.walkmanx21.util.PasswordEncryptionUtil;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @Setter
@@ -60,4 +66,25 @@ public class UserService {
     public User getUser(int userId) {
         return userDao.getUser(userId);
     }
+
+    public Optional<User> getUserByCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        Optional<Cookie> mayBeCookie = Optional.empty();
+        if (cookies != null) {
+            mayBeCookie = Arrays.stream(cookies).filter(c -> c.getName().equals("sessionId"))
+                    .findFirst();
+        }
+
+        if (mayBeCookie.isPresent()) {
+            UUID sessionId = UUID.fromString(mayBeCookie.get().getValue());
+            Optional<Session> mayBeSession = sessionService.getCurrentSession(sessionId);
+            if (mayBeSession.isPresent()) {
+                Session session = mayBeSession.get();
+                return Optional.of(getUser(session.getUser().getId()));
+            }
+        }
+        return Optional.empty();
+    }
+
+
  }
