@@ -19,11 +19,5 @@ public class UserRequestDtoValidatorUtil implements Validator {
 
         if (!userRequestDto.getPassword().equals(userRequestDto.getRepeatPassword()) && userRequestDto.getRepeatPassword() != null)
             errors.rejectValue("repeatPassword", "", "Passwords don't match");
-
-        if (userRequestDto.getPassword().contains(" "))
-            errors.rejectValue("password", "", "Password must not contain spaces");
-
-        if (userRequestDto.getLogin().contains(" "))
-            errors.rejectValue("login", "", "Login must not contain spaces");
     }
 }
