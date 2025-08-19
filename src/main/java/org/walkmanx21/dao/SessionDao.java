@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@Transactional
 public class SessionDao {
 
     private final SessionFactory sessionFactory;
@@ -24,7 +25,6 @@ public class SessionDao {
         this.sessionFactory = sessionFactory;
     }
 
-    @Transactional
     public void insertSession(Session session) {
         var hibernateSession = sessionFactory.getCurrentSession();
         try {
@@ -34,7 +34,6 @@ public class SessionDao {
         }
     }
 
-    @Transactional
     public Optional<Session> getCurrentSession(UUID sessionId) {
 
         String hql = "SELECT s FROM Session s WHERE s.id = :sessionId";
@@ -44,7 +43,6 @@ public class SessionDao {
             var selectionQuery = hibernateSession.createSelectionQuery(hql, Session.class);
             selectionQuery.setParameter("sessionId", sessionId);
             List<Session> findSessions = selectionQuery.getResultList();
-
             return findSessions.stream()
                     .filter(session -> session.getLocalDateTime().isAfter(LocalDateTime.now()))
                     .findFirst();
@@ -53,7 +51,6 @@ public class SessionDao {
         }
     }
 
-    @Transactional
     public void deleteExpiredSessions(){
         String hql = "DELETE Session s WHERE s.localDateTime < :now";
         var hibernateSession = sessionFactory.getCurrentSession();

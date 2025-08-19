@@ -15,6 +15,7 @@ import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.models.User;
 
 @Component
+@Transactional
 public class UserDao {
 
     private final SessionFactory sessionFactory;
@@ -24,7 +25,6 @@ public class UserDao {
         this.sessionFactory = sessionFactory;
     }
 
-    @Transactional
     public User insertUser(User user) {
         Session session = sessionFactory.getCurrentSession();
         try {
@@ -37,7 +37,6 @@ public class UserDao {
         return user;
     }
 
-    @Transactional
     public User getUser(String login) {
         String hql = "SELECT u FROM User u WHERE u.login = :userLogin";
 
@@ -57,17 +56,13 @@ public class UserDao {
         return user;
     }
 
-    @Transactional
     public User getUser(int userId) {
-        String hql = "SELECT u FROM User u WHERE u.id = :userId";
 
         Session hibernateSession = sessionFactory.getCurrentSession();
         User user;
 
         try {
-            var selectionQuery = hibernateSession.createSelectionQuery(hql, User.class);
-            selectionQuery.setParameter("userId", userId);
-            user = selectionQuery.getSingleResult();
+            user = hibernateSession.find(User.class, userId);
         } catch (NoResultException e) {
             throw new UserDoesNotExistException("User with this username was not found.");
         } catch (JDBCConnectionException e) {

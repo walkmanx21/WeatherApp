@@ -14,6 +14,7 @@ import org.walkmanx21.models.User;
 import java.util.List;
 
 @Component
+@Transactional
 public class LocationDao {
 
     private final SessionFactory sessionFactory;
@@ -23,7 +24,6 @@ public class LocationDao {
         this.sessionFactory = sessionFactory;
     }
 
-    @Transactional
     public void insertLocation (Location location) {
         try {
             var hibernateSession = sessionFactory.getCurrentSession();
@@ -35,7 +35,6 @@ public class LocationDao {
         }
     }
 
-    @Transactional
     public List<Location> getAllUserLocations(User user) {
         String hql = "SELECT l FROM Location l WHERE l.user.id = :userId";
         var hibernateSession = sessionFactory.getCurrentSession();
@@ -49,7 +48,6 @@ public class LocationDao {
         }
     }
 
-    @Transactional
     public void deleteLocation(Location location) {
         try {
             var hibernateSession = sessionFactory.getCurrentSession();
