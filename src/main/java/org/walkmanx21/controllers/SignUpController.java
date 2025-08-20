@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.UserRequestDto;
 import org.walkmanx21.dto.UserResponseDto;
@@ -19,13 +20,18 @@ public class SignUpController {
 
     private final UserRequestDtoValidatorUtil userRequestDtoValidatorUtil;
     private final UserService userService;
-    private final CookieUtil createCookieUtil;
+    private final CookieUtil cookieUtil;
 
     @Autowired
-    public SignUpController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, CookieUtil createCookieUtil) {
+    public SignUpController(UserRequestDtoValidatorUtil userRequestDtoValidatorUtil, UserService userService, CookieUtil cookieUtil) {
         this.userRequestDtoValidatorUtil = userRequestDtoValidatorUtil;
         this.userService = userService;
-        this.createCookieUtil = createCookieUtil;
+        this.cookieUtil = cookieUtil;
+    }
+
+    @InitBinder("userRequestDto")
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(userRequestDtoValidatorUtil);
     }
 
     @GetMapping
@@ -36,14 +42,12 @@ public class SignUpController {
     @PostMapping
     public String signUp(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response) {
 
-        userRequestDtoValidatorUtil.validate(userRequestDto, bindingResult);
-
         if (bindingResult.hasErrors())
             return "sign-up/sign-up-with-errors";
 
         try {
             UserResponseDto userResponseDto = userService.registerUser(userRequestDto);
-            createCookieUtil.setSessionId(userResponseDto, response);
+            cookieUtil.setSessionId(userResponseDto.getSessionId(), response);
         } catch (UserAlreadyExistException e) {
             bindingResult.rejectValue("login", "", e.getMessage());
             return "sign-up/sign-up-with-errors";
