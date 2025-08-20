@@ -6,13 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
+import org.walkmanx21.services.SessionCookieInterceptor;
 
 @Configuration
 @ComponentScan("org.walkmanx21")
@@ -21,10 +19,12 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
+    private final SessionCookieInterceptor interceptor;
 
     @Autowired
-    public WebMvcConfig(ApplicationContext applicationContext) {
+    public WebMvcConfig(ApplicationContext applicationContext, SessionCookieInterceptor interceptor) {
         this.applicationContext = applicationContext;
+        this.interceptor = interceptor;
     }
 
     @Bean
@@ -60,5 +60,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("/css/");
         registry.addResourceHandler("/img/**")
                 .addResourceLocations("/img/");
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(interceptor);
     }
 }

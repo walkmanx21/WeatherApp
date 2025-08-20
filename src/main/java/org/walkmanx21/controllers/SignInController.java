@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.ResponseDto;
+import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.CookieUtil;
 
@@ -17,12 +17,12 @@ import org.walkmanx21.util.CookieUtil;
 public class SignInController {
 
     private final UserService userService;
-    private final CookieUtil createCookieUtil;
+    private final CookieUtil cookieUtil;
 
     @Autowired
-    public SignInController(UserService userService, CookieUtil createCookieUtil) {
+    public SignInController(UserService userService, CookieUtil cookieUtil) {
         this.userService = userService;
-        this.createCookieUtil = createCookieUtil;
+        this.cookieUtil = cookieUtil;
     }
 
     @GetMapping
@@ -31,19 +31,18 @@ public class SignInController {
     }
 
     @PostMapping
-    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
+    public String authorizeUser(@ModelAttribute("userRequestDto") @Valid UserRequestDto userRequestDto, BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors())
             return "sign-in/sign-in-with-errors";
 
-        ResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
+        UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
+        request.setAttribute("sessionId", userResponseDto.getSessionId());
 
         if (userResponseDto.isError()) {
             bindingResult.rejectValue(userResponseDto.getErrorField(), "", userResponseDto.getErrorMessage());
             return "sign-in/sign-in-with-errors";
         }
-
-        createCookieUtil.setSessionId(userResponseDto.getSessionId(), response);
 
         return "redirect:/";
 

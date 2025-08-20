@@ -23,11 +23,11 @@ public class ExceptionHandlingFilterUtil {
         return buildModelAndView("error", "We're sorry, but an unexpected error has occurred. Please try again later.");
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ModelAndView handleException(Exception e) {
-        return buildModelAndView("error", "The requested page was not found");
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ModelAndView handleException(Exception e) {
+//        return buildModelAndView("error", "The requested page was not found");
+//    }
 
     private ModelAndView buildModelAndView(String viewName, String message) {
         ModelAndView modelAndView = new ModelAndView(viewName);

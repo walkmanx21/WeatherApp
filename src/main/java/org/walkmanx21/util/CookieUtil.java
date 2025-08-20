@@ -13,8 +13,8 @@ public class CookieUtil {
     @Value("${lifetime.duration}")
     private int cookieLifetime;
 
-    public void setSessionId(UUID sessionId, HttpServletResponse response) {
-        Cookie cookie = new Cookie("sessionId", sessionId.toString());
+    public void setSessionId(String sessionId, HttpServletResponse response) {
+        Cookie cookie = new Cookie("sessionId", sessionId);
         cookie.setMaxAge(cookieLifetime);
         response.addCookie(cookie);
     }

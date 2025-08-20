@@ -16,7 +16,7 @@ import org.walkmanx21.config.PropertyConfig;
 import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.ResponseDto;
+import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.SessionService;
@@ -34,7 +34,7 @@ import java.util.UUID;
 public class SessionServiceIT {
 
     private final UserRequestDto userRequestDto = new UserRequestDto("walkmanx21", "walkmanx21", "walkmanx21");
-    private ResponseDto userResponseDto;
+    private UserResponseDto userResponseDto;
 
     @Autowired
     private UserService userService;
@@ -55,17 +55,17 @@ public class SessionServiceIT {
 
     @Test
     void whenRegistrationTakesPlaceThenSessionIsCreated() {
-        UUID sessionId = userResponseDto.getSessionId();
-        Optional<Session> currentSession = sessionService.getCurrentSession(sessionId);
+        String sessionId = userResponseDto.getSessionId();
+        Optional<Session> currentSession = sessionService.getCurrentSession(UUID.fromString(sessionId));
         Assertions.assertTrue(currentSession.isPresent());
 
     }
 
     @Test
     void whenWaitIsLongerThanLifetimeOfSessionItExpires() throws InterruptedException {
-        UUID sessionId = userResponseDto.getSessionId();
+        String sessionId = userResponseDto.getSessionId();
         Thread.sleep(2000);
-        Optional<Session> currentSession = sessionService.getCurrentSession(sessionId);
+        Optional<Session> currentSession = sessionService.getCurrentSession(UUID.fromString(sessionId));
         Assertions.assertFalse(currentSession.isPresent());
     }
 

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.ResponseDto;
+import org.walkmanx21.dto.UserResponseDto;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
@@ -37,40 +37,40 @@ public class UserService {
         this.sessionService = sessionService;
     }
 
-    public ResponseDto registerUser(UserRequestDto userRequestDto) {
+    public UserResponseDto registerUser(UserRequestDto userRequestDto) {
         User user = mappingUtil.convertToUser(userRequestDto);
         String hashPassword = passwordEncryptionUtil.hashPassword(user.getPassword());
         user.setPassword(hashPassword);
-        ResponseDto responseDto;
+        UserResponseDto userResponseDto;
         try {
             user = userDao.insertUser(user);
             Session session = sessionService.createSession(user);
-            responseDto = mappingUtil.convertToResponseDto(user);
-            responseDto.setSessionId(session.getId());
+            userResponseDto = mappingUtil.convertToUserResponseDto(user);
+            userResponseDto.setSessionId(session.getId().toString());
         } catch (UserAlreadyExistException e) {
-            responseDto = new ResponseDto(true, "login", e.getMessage());
+            userResponseDto = new UserResponseDto(true, "login", e.getMessage());
         }
-        return responseDto;
+        return userResponseDto;
     }
 
-    public ResponseDto authorizeUser(UserRequestDto userRequestDto) {
+    public UserResponseDto authorizeUser(UserRequestDto userRequestDto) {
         User incomingUser = mappingUtil.convertToUser(userRequestDto);
-        ResponseDto responseDto;
+        UserResponseDto userResponseDto;
 
         try {
             User foundUser = userDao.getUser(incomingUser.getLogin());
             passwordEncryptionUtil.verifyPassword(incomingUser.getPassword(), foundUser.getPassword());
             incomingUser.setId(foundUser.getId());
             Session session = sessionService.createSession(incomingUser);
-            responseDto = mappingUtil.convertToResponseDto(incomingUser);
-            responseDto.setSessionId(session.getId());
+            userResponseDto = mappingUtil.convertToUserResponseDto(incomingUser);
+            userResponseDto.setSessionId(session.getId().toString());
         } catch (UserDoesNotExistException e) {
-            responseDto = new ResponseDto(true, "login", e.getMessage());
+            userResponseDto = new UserResponseDto(true, "login", e.getMessage());
         } catch (WrongPasswordException e) {
-            responseDto = new ResponseDto(true, "password", e.getMessage());
+            userResponseDto = new UserResponseDto(true, "password", e.getMessage());
         }
 
-        return responseDto;
+        return userResponseDto;
     }
 
     public User getUser(int userId) {

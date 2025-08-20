@@ -9,16 +9,16 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto {
+public class UserResponseDto {
 
     private int userId;
     private String login;
-    private UUID sessionId;
+    private String sessionId;
     private boolean error;
     private String errorField;
     private String errorMessage;
 
-    public ResponseDto(boolean error, String errorField, String errorMessage) {
+    public UserResponseDto(boolean error, String errorField, String errorMessage) {
         this.error = error;
         this.errorField = errorField;
         this.errorMessage = errorMessage;
