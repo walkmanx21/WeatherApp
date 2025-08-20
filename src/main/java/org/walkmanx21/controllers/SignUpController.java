@@ -8,8 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.UserResponseDto;
-import org.walkmanx21.exceptions.UserAlreadyExistException;
+import org.walkmanx21.dto.ResponseDto;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.CookieUtil;
 import org.walkmanx21.util.UserRequestDtoValidatorUtil;
@@ -45,7 +44,7 @@ public class SignUpController {
         if (bindingResult.hasErrors())
             return "sign-up/sign-up-with-errors";
 
-        UserResponseDto userResponseDto = userService.registerUser(userRequestDto);
+        ResponseDto userResponseDto = userService.registerUser(userRequestDto);
 
         if (userResponseDto.isError()) {
             bindingResult.rejectValue(userResponseDto.getErrorField(), "", userResponseDto.getErrorMessage());

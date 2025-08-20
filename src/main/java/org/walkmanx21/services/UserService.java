@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.UserResponseDto;
+import org.walkmanx21.dto.ResponseDto;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
@@ -37,46 +37,40 @@ public class UserService {
         this.sessionService = sessionService;
     }
 
-    public UserResponseDto registerUser(UserRequestDto userRequestDto) {
+    public ResponseDto registerUser(UserRequestDto userRequestDto) {
         User user = mappingUtil.convertToUser(userRequestDto);
         String hashPassword = passwordEncryptionUtil.hashPassword(user.getPassword());
         user.setPassword(hashPassword);
-        UserResponseDto userResponseDto = new UserResponseDto();
+        ResponseDto responseDto;
         try {
             user = userDao.insertUser(user);
             Session session = sessionService.createSession(user);
-            userResponseDto = mappingUtil.convertToUserResponseDto(user);
-            userResponseDto.setSessionId(session.getId());
+            responseDto = mappingUtil.convertToResponseDto(user);
+            responseDto.setSessionId(session.getId());
         } catch (UserAlreadyExistException e) {
-            userResponseDto.setError(true);
-            userResponseDto.setErrorField("login");
-            userResponseDto.setErrorMessage(e.getMessage());
+            responseDto = new ResponseDto(true, "login", e.getMessage());
         }
-        return userResponseDto;
+        return responseDto;
     }
 
-    public UserResponseDto authorizeUser(UserRequestDto userRequestDto) {
+    public ResponseDto authorizeUser(UserRequestDto userRequestDto) {
         User incomingUser = mappingUtil.convertToUser(userRequestDto);
-        UserResponseDto userResponseDto = new UserResponseDto();
+        ResponseDto responseDto;
+
         try {
             User foundUser = userDao.getUser(incomingUser.getLogin());
-            if (passwordEncryptionUtil.verifyPassword(incomingUser.getPassword(), foundUser.getPassword())) {
-                incomingUser.setId(foundUser.getId());
-                Session session = sessionService.createSession(incomingUser);
-                userResponseDto = mappingUtil.convertToUserResponseDto(incomingUser);
-                userResponseDto.setSessionId(session.getId());
-            } else {
-                userResponseDto.setError(true);
-                userResponseDto.setErrorField("password");
-                userResponseDto.setErrorMessage("The entered password is incorrect");
-            }
+            passwordEncryptionUtil.verifyPassword(incomingUser.getPassword(), foundUser.getPassword());
+            incomingUser.setId(foundUser.getId());
+            Session session = sessionService.createSession(incomingUser);
+            responseDto = mappingUtil.convertToResponseDto(incomingUser);
+            responseDto.setSessionId(session.getId());
         } catch (UserDoesNotExistException e) {
-            userResponseDto.setError(true);
-            userResponseDto.setErrorField("login");
-            userResponseDto.setErrorMessage(e.getMessage());
+            responseDto = new ResponseDto(true, "login", e.getMessage());
+        } catch (WrongPasswordException e) {
+            responseDto = new ResponseDto(true, "password", e.getMessage());
         }
 
-        return userResponseDto;
+        return responseDto;
     }
 
     public User getUser(int userId) {
@@ -103,4 +97,4 @@ public class UserService {
     }
 
 
- }
+}

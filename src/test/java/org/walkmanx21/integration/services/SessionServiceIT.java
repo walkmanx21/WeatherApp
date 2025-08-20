@@ -16,9 +16,7 @@ import org.walkmanx21.config.PropertyConfig;
 import org.walkmanx21.dao.SessionDao;
 import org.walkmanx21.dao.UserDao;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.UserResponseDto;
-import org.walkmanx21.exceptions.UserDoesNotExistException;
-import org.walkmanx21.exceptions.WrongPasswordException;
+import org.walkmanx21.dto.ResponseDto;
 import org.walkmanx21.models.Session;
 import org.walkmanx21.models.User;
 import org.walkmanx21.services.SessionService;
@@ -36,7 +34,7 @@ import java.util.UUID;
 public class SessionServiceIT {
 
     private final UserRequestDto userRequestDto = new UserRequestDto("walkmanx21", "walkmanx21", "walkmanx21");
-    private UserResponseDto userResponseDto;
+    private ResponseDto userResponseDto;
 
     @Autowired
     private UserService userService;

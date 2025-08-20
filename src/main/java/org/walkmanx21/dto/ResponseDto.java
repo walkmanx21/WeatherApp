@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto {
+public class ResponseDto {
 
     private int userId;
     private String login;
@@ -17,5 +17,11 @@ public class UserResponseDto {
     private boolean error;
     private String errorField;
     private String errorMessage;
+
+    public ResponseDto(boolean error, String errorField, String errorMessage) {
+        this.error = error;
+        this.errorField = errorField;
+        this.errorMessage = errorMessage;
+    }
 }
 

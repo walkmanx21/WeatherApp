@@ -6,15 +6,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.UserResponseDto;
-import org.walkmanx21.exceptions.UserDoesNotExistException;
-import org.walkmanx21.exceptions.WrongPasswordException;
+import org.walkmanx21.dto.ResponseDto;
 import org.walkmanx21.services.UserService;
 import org.walkmanx21.util.CookieUtil;
-import org.walkmanx21.util.UserRequestDtoValidatorUtil;
 
 @Controller("/sign-in")
 @RequestMapping("/sign-in")
@@ -40,7 +36,7 @@ public class SignInController {
         if (bindingResult.hasErrors())
             return "sign-in/sign-in-with-errors";
 
-        UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
+        ResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
 
         if (userResponseDto.isError()) {
             bindingResult.rejectValue(userResponseDto.getErrorField(), "", userResponseDto.getErrorMessage());

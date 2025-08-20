@@ -13,16 +13,16 @@ public class MappingUtil {
 
     static {
         MODEL_MAPPER = new ModelMapper();
-        MODEL_MAPPER.typeMap(User.class, UserResponseDto.class)
-                .addMapping(User::getId, UserResponseDto::setUserId);
+        MODEL_MAPPER.typeMap(User.class, ResponseDto.class)
+                .addMapping(User::getId, ResponseDto::setUserId);
     }
 
     public User convertToUser(UserRequestDto userRequestDto) {
         return MODEL_MAPPER.map(userRequestDto, User.class);
     }
 
-    public UserResponseDto convertToUserResponseDto(User user) {
-        return MODEL_MAPPER.map(user, UserResponseDto.class);
+    public ResponseDto convertToResponseDto(User user) {
+        return MODEL_MAPPER.map(user, ResponseDto.class);
     }
 
     public Location convertToLocation (FoundLocationDto foundLocationDto) {

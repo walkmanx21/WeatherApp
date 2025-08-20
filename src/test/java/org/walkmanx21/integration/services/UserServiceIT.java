@@ -10,7 +10,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.walkmanx21.config.*;
 import org.walkmanx21.dto.UserRequestDto;
-import org.walkmanx21.dto.UserResponseDto;
+import org.walkmanx21.dto.ResponseDto;
 import org.walkmanx21.exceptions.UserAlreadyExistException;
 import org.walkmanx21.exceptions.UserDoesNotExistException;
 import org.walkmanx21.exceptions.WrongPasswordException;
@@ -25,7 +25,7 @@ import org.walkmanx21.services.UserService;
 public class UserServiceIT {
 
     private final UserRequestDto userRequestDto = new UserRequestDto("walkmanx21", "walkmanx21", "walkmanx21");
-    private UserResponseDto userResponseDto;
+    private ResponseDto userResponseDto;
 
     @Autowired
     private UserService userService;
