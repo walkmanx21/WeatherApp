@@ -45,13 +45,14 @@ public class SignUpController {
         if (bindingResult.hasErrors())
             return "sign-up/sign-up-with-errors";
 
-        try {
-            UserResponseDto userResponseDto = userService.registerUser(userRequestDto);
-            cookieUtil.setSessionId(userResponseDto.getSessionId(), response);
-        } catch (UserAlreadyExistException e) {
-            bindingResult.rejectValue("login", "", e.getMessage());
+        UserResponseDto userResponseDto = userService.registerUser(userRequestDto);
+
+        if (userResponseDto.isError()) {
+            bindingResult.rejectValue(userResponseDto.getErrorField(), "", userResponseDto.getErrorMessage());
             return "sign-up/sign-up-with-errors";
         }
+
+        cookieUtil.setSessionId(userResponseDto.getSessionId(), response);
 
         return "redirect:/";
     }

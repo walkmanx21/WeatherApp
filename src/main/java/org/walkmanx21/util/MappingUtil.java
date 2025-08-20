@@ -13,6 +13,8 @@ public class MappingUtil {
 
     static {
         MODEL_MAPPER = new ModelMapper();
+        MODEL_MAPPER.typeMap(User.class, UserResponseDto.class)
+                .addMapping(User::getId, UserResponseDto::setUserId);
     }
 
     public User convertToUser(UserRequestDto userRequestDto) {

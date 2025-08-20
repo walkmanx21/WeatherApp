@@ -11,7 +11,11 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserResponseDto {
 
-    private int id;
+    private int userId;
     private String login;
     private UUID sessionId;
+    private boolean error;
+    private String errorField;
+    private String errorMessage;
 }
+

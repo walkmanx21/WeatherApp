@@ -37,7 +37,7 @@ public class UserServiceIT {
 
     @Test
     void whenRegisterNewUserThenRequestUserFromDatabaseByIdLoginsMatch() {
-        User user = userService.getUser(userResponseDto.getId());
+        User user = userService.getUser(userResponseDto.getUserId());
         Assertions.assertEquals(userRequestDto.getLogin(), userResponseDto.getLogin());
         Assertions.assertNotNull(user);
     }

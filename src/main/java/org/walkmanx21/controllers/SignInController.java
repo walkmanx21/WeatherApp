@@ -40,16 +40,14 @@ public class SignInController {
         if (bindingResult.hasErrors())
             return "sign-in/sign-in-with-errors";
 
-        try {
-            UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
-            createCookieUtil.setSessionId(userResponseDto.getSessionId(), response);
-        } catch (UserDoesNotExistException e) {
-            bindingResult.rejectValue("login", "", e.getMessage());
-            return "sign-in/sign-in-with-errors";
-        } catch (WrongPasswordException e) {
-            bindingResult.rejectValue("password", "", e.getMessage());
+        UserResponseDto userResponseDto = userService.authorizeUser(userRequestDto);
+
+        if (userResponseDto.isError()) {
+            bindingResult.rejectValue(userResponseDto.getErrorField(), "", userResponseDto.getErrorMessage());
             return "sign-in/sign-in-with-errors";
         }
+
+        createCookieUtil.setSessionId(userResponseDto.getSessionId(), response);
 
         return "redirect:/";
 
