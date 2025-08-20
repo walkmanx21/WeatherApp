@@ -51,11 +51,6 @@ public class SignInController {
             return "sign-in/sign-in-with-errors";
         }
 
-        Object requestUrl = request.getSession().getAttribute("requestUrl");
-        if (requestUrl != null) {
-            return "redirect:" + requestUrl;
-        }
-
         return "redirect:/";
 
     }
